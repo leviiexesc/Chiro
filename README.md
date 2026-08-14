@@ -41,6 +41,7 @@
 - **Portable `.3105` patches** — bundle-based rules survive container-ID changes between devices; projects may include files or folders and support optional password protection.
 - **Limited Cleaner** — scans only each app's `Library/Caches` and `tmp`, shows the recoverable size, and requires confirmation before deletion.
 - **Wallpaper Lab** — imports `.tendies` packages, validates payloads, journals installed items, and resets only content installed by 3105.
+- **No jailbreak installation** — 3105 does not install a persistent jailbreak, bootstrap, or daemon and does not inject code into third-party apps. Because it still uses device exploits and can modify app data, no universal guarantee can be made against every app's integrity or jailbreak-detection policy.
 - **Localized interface** — English, Vietnamese, and Simplified Chinese.
 
 ## Compatibility

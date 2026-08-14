@@ -36,6 +36,7 @@
 - Tạo và nhập dự án patch `.3105`, hỗ trợ nhiều quy tắc, tệp/thư mục và mật khẩu tùy chọn.
 - Dọn dẹp giới hạn trong `Library/Caches` và `tmp`, luôn hiển thị cảnh báo trước khi xóa.
 - Nhập gói hình nền `.tendies`, xác thực payload và chỉ reset nội dung do 3105 cài đặt.
+- 3105 không cài jailbreak, bootstrap hay daemon thường trú và không inject mã vào ứng dụng bên thứ ba. Do ứng dụng vẫn dùng khai thác thiết bị và có thể sửa dữ liệu app, không thể bảo đảm vượt qua mọi cơ chế kiểm tra tính toàn vẹn hoặc phát hiện jailbreak.
 - Hỗ trợ tiếng Anh, tiếng Việt và tiếng Trung giản thể.
 
 ## Phiên bản iOS đã xác minh
