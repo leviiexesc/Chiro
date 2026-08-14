@@ -183,13 +183,18 @@ struct AppDataBrowserView: View {
         errorMessage = nil
         let emptyMessage = language.text("browser.empty")
         DispatchQueue.global(qos: .userInitiated).async {
-            let apiApps = ContainerStore.installedAppsFromAPI()
+            let bundleMetadata = ContainerStore.applicationBundleMetadataCatalog()
+            let apiApps = ContainerStore.applyingBundleMetadata(
+                to: ContainerStore.installedAppsFromAPI(),
+                catalog: bundleMetadata
+            )
             if apiApps.isEmpty {
                 log("browser: installed-app API unavailable; trying MCM class-2 enumeration...")
             }
             let dynamicIdentifiers = ContainerStore.dynamicAppIdentifiers()
             let mcmApps = ContainerStore.installedAppsFromMCM(
-                identifiers: dynamicIdentifiers
+                identifiers: dynamicIdentifiers,
+                bundleMetadata: bundleMetadata
             )
             let filesystemApps = ContainerStore.containersFromFilesystem()
             let baseIdentifiedApps = mcmApps + apiApps
@@ -214,7 +219,7 @@ struct AppDataBrowserView: View {
                 dynamic: dynamicIdentifiers,
                 installed: apiApps.map(\.bundleID),
                 research: ContainerStore.researchAppIdentifiers,
-                custom: [],
+                custom: bundleMetadata.keys.sorted(),
                 launchServices: launchServicesIdentifiers
             )
             log(
@@ -223,7 +228,8 @@ struct AppDataBrowserView: View {
                 "LaunchServices=\(launchServicesIdentifiers.count) -> \(mhaIdentifiers.count) candidates"
             )
             let mhaApps = ContainerStore.installedAppsFromMHACandidates(
-                identifiers: mhaIdentifiers
+                identifiers: mhaIdentifiers,
+                bundleMetadata: bundleMetadata
             ) { discoveredApps in
                 var progressiveResult = AppDataCatalogMerger.merge(
                     identified: discoveredApps + baseIdentifiedApps,

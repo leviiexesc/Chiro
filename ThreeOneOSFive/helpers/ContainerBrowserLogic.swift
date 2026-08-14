@@ -99,6 +99,7 @@ enum ContainerBundleCandidateResolver {
 
     static func isValidBundleIdentifier(_ value: String) -> Bool {
         guard !value.isEmpty,
+              value.utf8.count <= 255,
               value.contains("."),
               !value.contains(".."),
               value.first != ".",
@@ -234,5 +235,68 @@ enum AppDataCatalogMerger {
 enum ContainerPresentationPolicy {
     static func shouldShow(bundleID: String) -> Bool {
         UUID(uuidString: bundleID) == nil
+    }
+}
+
+enum AppDisplayNamePolicy {
+    static func resolve(bundleID: String, candidates: [String?]) -> String {
+        let fallback = bundleID.trimmingCharacters(in: .whitespacesAndNewlines)
+        for rawCandidate in candidates {
+            guard let rawCandidate else { continue }
+            let candidate = rawCandidate.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !candidate.isEmpty,
+                  candidate.utf8.count <= 256,
+                  candidate.rangeOfCharacter(from: .controlCharacters) == nil,
+                  candidate.caseInsensitiveCompare(fallback) != .orderedSame,
+                  UUID(uuidString: candidate) == nil else {
+                continue
+            }
+            return candidate
+        }
+        return fallback
+    }
+}
+
+struct ApplicationBundleMetadata: Equatable {
+    let bundleID: String
+    let displayName: String
+    let version: String
+}
+
+enum ApplicationBundleMetadataReader {
+    static func metadata(
+        from plistData: Data,
+        localizedInfo: [String: Any]? = nil
+    ) -> ApplicationBundleMetadata? {
+        guard let info = try? PropertyListSerialization.propertyList(
+            from: plistData,
+            options: [],
+            format: nil
+        ) as? [String: Any],
+              let rawBundleID = info["CFBundleIdentifier"] as? String else {
+            return nil
+        }
+
+        let bundleID = rawBundleID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard ContainerBundleCandidateResolver.isValidBundleIdentifier(bundleID) else {
+            return nil
+        }
+
+        let displayName = AppDisplayNamePolicy.resolve(
+            bundleID: bundleID,
+            candidates: [
+                localizedInfo?["CFBundleDisplayName"] as? String,
+                localizedInfo?["CFBundleName"] as? String,
+                info["CFBundleDisplayName"] as? String,
+                info["CFBundleName"] as? String
+            ]
+        )
+        let version = (info["CFBundleShortVersionString"] as? String)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return ApplicationBundleMetadata(
+            bundleID: bundleID,
+            displayName: displayName,
+            version: version
+        )
     }
 }

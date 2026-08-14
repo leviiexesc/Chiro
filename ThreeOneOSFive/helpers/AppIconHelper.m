@@ -219,16 +219,50 @@ NSDictionary *appInfoForBundleID(NSString *bundleID) {
     if (!matchesRequestedIdentifier) return result;
     result[@"found"] = @YES;
 
-    SEL nameSel = NSSelectorFromString(@"localizedName");
-    if ([proxy respondsToSelector:nameSel]) {
-        NSString *name = ((id (*)(id, SEL))objc_msgSend)(proxy, nameSel);
-        if ([name isKindOfClass:[NSString class]] && name.length > 0) result[@"name"] = name;
+    NSURL *bundleURL = nil;
+    SEL bundleURLSel = NSSelectorFromString(@"bundleURL");
+    if ([proxy respondsToSelector:bundleURLSel]) {
+        id value = ((id (*)(id, SEL))objc_msgSend)(proxy, bundleURLSel);
+        if ([value isKindOfClass:[NSURL class]]) bundleURL = value;
     }
 
-    SEL versionSel = NSSelectorFromString(@"shortVersionString");
-    if ([proxy respondsToSelector:versionSel]) {
-        NSString *version = ((id (*)(id, SEL))objc_msgSend)(proxy, versionSel);
-        if ([version isKindOfClass:[NSString class]] && version.length > 0) result[@"version"] = version;
+    NSBundle *applicationBundle = bundleURL ? [NSBundle bundleWithURL:bundleURL] : nil;
+    NSDictionary *localizedInfo = applicationBundle.localizedInfoDictionary;
+    NSDictionary *bundleInfo = applicationBundle.infoDictionary;
+    NSString *bundleName = stringForFirstKey(localizedInfo, @[
+        @"CFBundleDisplayName", @"CFBundleName"
+    ]);
+    if (bundleName.length == 0) {
+        bundleName = stringForFirstKey(bundleInfo, @[
+            @"CFBundleDisplayName", @"CFBundleName"
+        ]);
+    }
+    if (bundleName.length > 0) result[@"name"] = bundleName;
+
+    if ([result[@"name"] isEqualToString:bundleID]) {
+        for (NSString *selectorName in @[@"localizedName", @"localizedShortName"]) {
+            SEL nameSel = NSSelectorFromString(selectorName);
+            if (![proxy respondsToSelector:nameSel]) continue;
+            NSString *name = ((id (*)(id, SEL))objc_msgSend)(proxy, nameSel);
+            if ([name isKindOfClass:[NSString class]] && name.length > 0) {
+                result[@"name"] = name;
+                break;
+            }
+        }
+    }
+
+    NSString *bundleVersion = stringForFirstKey(bundleInfo, @[
+        @"CFBundleShortVersionString"
+    ]);
+    if (bundleVersion.length > 0) result[@"version"] = bundleVersion;
+    if (!result[@"version"]) {
+        SEL versionSel = NSSelectorFromString(@"shortVersionString");
+        if ([proxy respondsToSelector:versionSel]) {
+            NSString *version = ((id (*)(id, SEL))objc_msgSend)(proxy, versionSel);
+            if ([version isKindOfClass:[NSString class]] && version.length > 0) {
+                result[@"version"] = version;
+            }
+        }
     }
 
     for (NSString *selectorName in @[@"dataContainerURL", @"containerURL"]) {

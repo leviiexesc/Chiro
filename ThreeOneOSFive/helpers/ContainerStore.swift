@@ -12,7 +12,9 @@ struct InstalledApp: Identifiable, Hashable {
     let icon: UIImage?
 
     var id: String { bundleID }
-    var displayName: String { name.isEmpty ? bundleID : name }
+    var displayName: String {
+        AppDisplayNamePolicy.resolve(bundleID: bundleID, candidates: [name])
+    }
 
     static func == (lhs: InstalledApp, rhs: InstalledApp) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
@@ -36,6 +38,11 @@ struct FileEntry: Identifiable, Hashable {
 enum ContainerStore {
     static let appDataRoot = "/var/mobile/Containers/Data/Application"
     static let systemDataRoot = "/var/mobile/Containers/Data/System"
+    private static let applicationBundleRoots: [(path: String, nested: Bool)] = [
+        ("/var/containers/Bundle/Application", true),
+        ("/Applications", false),
+        ("/System/Applications", false)
+    ]
     static let researchAppIdentifiers = [
         "com.apple.mobilesafari", "com.apple.mobilenotes", "com.apple.Maps",
         "com.apple.facetime", "com.apple.iBooks", "com.apple.podcasts",
@@ -83,6 +90,36 @@ enum ContainerStore {
         return apps
     }
 
+    static func applicationBundleMetadataCatalog() -> [String: ApplicationBundleMetadata] {
+        var catalog: [String: ApplicationBundleMetadata] = [:]
+        for root in applicationBundleRoots {
+            for metadata in applicationBundleMetadata(at: root.path, nested: root.nested) {
+                catalog[metadata.bundleID] = metadata
+            }
+        }
+        log("browser: app-bundle metadata resolved \(catalog.count) names")
+        return catalog
+    }
+
+    static func applyingBundleMetadata(
+        to apps: [InstalledApp],
+        catalog: [String: ApplicationBundleMetadata]
+    ) -> [InstalledApp] {
+        apps.map { app in
+            guard let metadata = catalog[app.bundleID] else { return app }
+            return InstalledApp(
+                bundleID: app.bundleID,
+                name: AppDisplayNamePolicy.resolve(
+                    bundleID: app.bundleID,
+                    candidates: [metadata.displayName, app.name]
+                ),
+                containerPath: app.containerPath,
+                version: app.version.isEmpty ? metadata.version : app.version,
+                icon: app.icon
+            )
+        }
+    }
+
     static func dynamicAppIdentifiers() -> [String] {
         var enumerationError: NSString?
         let identifiers = MCMEnumerateIdentifiersForClass(2, 1_024, &enumerationError)
@@ -91,7 +128,10 @@ enum ContainerStore {
         return identifiers
     }
 
-    static func installedAppsFromMCM(identifiers: [String]? = nil) -> [InstalledApp] {
+    static func installedAppsFromMCM(
+        identifiers: [String]? = nil,
+        bundleMetadata: [String: ApplicationBundleMetadata] = [:]
+    ) -> [InstalledApp] {
         let identifiers = identifiers ?? dynamicAppIdentifiers()
 
         var apps: [InstalledApp] = []
@@ -105,11 +145,15 @@ enum ContainerStore {
             if index < 3 { log("mcm[\(index)]: \(bundleID) -> \(containerPath)") }
 
             let rawInfo = appInfoForBundleID(bundleID) as? [String: Any] ?? [:]
+            let metadata = bundleMetadata[bundleID]
             apps.append(InstalledApp(
                 bundleID: bundleID,
-                name: rawInfo["name"] as? String ?? bundleID,
+                name: AppDisplayNamePolicy.resolve(
+                    bundleID: bundleID,
+                    candidates: [metadata?.displayName, rawInfo["name"] as? String]
+                ),
                 containerPath: containerPath,
-                version: "",
+                version: rawInfo["version"] as? String ?? metadata?.version ?? "",
                 icon: rawInfo["icon"] as? UIImage
             ))
         }
@@ -121,6 +165,7 @@ enum ContainerStore {
 
     static func installedAppsFromMHACandidates(
         identifiers: [String],
+        bundleMetadata: [String: ApplicationBundleMetadata] = [:],
         progress: (([InstalledApp]) -> Void)? = nil
     ) -> [InstalledApp] {
         guard !identifiers.isEmpty else {
@@ -146,11 +191,15 @@ enum ContainerStore {
             }
 
             let rawInfo = appInfoForBundleID(bundleID) as? [String: Any] ?? [:]
+            let metadata = bundleMetadata[bundleID]
             apps.append(InstalledApp(
                 bundleID: bundleID,
-                name: rawInfo["name"] as? String ?? bundleID,
+                name: AppDisplayNamePolicy.resolve(
+                    bundleID: bundleID,
+                    candidates: [metadata?.displayName, rawInfo["name"] as? String]
+                ),
                 containerPath: containerPath,
-                version: rawInfo["version"] as? String ?? "",
+                version: rawInfo["version"] as? String ?? metadata?.version ?? "",
                 icon: rawInfo["icon"] as? UIImage
             ))
             if apps.count <= 5 {
@@ -164,6 +213,54 @@ enum ContainerStore {
         progress?(apps)
         log("browser: MHA-C2 resolved \(apps.count)/\(identifiers.count) bundle candidates")
         return apps
+    }
+
+    private static func applicationBundleMetadata(
+        at rootPath: String,
+        nested: Bool
+    ) -> [ApplicationBundleMetadata] {
+        let handle = grantContainerAccess(rootPath)
+        defer {
+            if handle >= 0 { bad_query_release(handle) }
+        }
+
+        let fileManager = FileManager.default
+        guard let rootEntries = try? fileManager.contentsOfDirectory(atPath: rootPath) else {
+            log("browser: app-bundle metadata unavailable root=\(rootPath) grant=\(handle)")
+            return []
+        }
+
+        let bundlePaths: [String]
+        if nested {
+            bundlePaths = rootEntries.prefix(2_048).flatMap { entry -> [String] in
+                guard UUID(uuidString: entry) != nil else { return [] }
+                let containerPath = (rootPath as NSString).appendingPathComponent(entry)
+                let children = (try? fileManager.contentsOfDirectory(atPath: containerPath)) ?? []
+                return children.prefix(16).compactMap { child in
+                    guard child.hasSuffix(".app") else { return nil }
+                    return (containerPath as NSString).appendingPathComponent(child)
+                }
+            }
+        } else {
+            bundlePaths = rootEntries.prefix(2_048).compactMap { entry in
+                guard entry.hasSuffix(".app") else { return nil }
+                return (rootPath as NSString).appendingPathComponent(entry)
+            }
+        }
+
+        return bundlePaths.compactMap { bundlePath in
+            let infoPath = (bundlePath as NSString).appendingPathComponent("Info.plist")
+            let infoSize = (try? fileManager.attributesOfItem(atPath: infoPath)[.size] as? NSNumber)?
+                .int64Value ?? 0
+            guard infoSize > 0, infoSize <= 2 * 1_024 * 1_024 else { return nil }
+            guard let plistData = try? Data(contentsOf: URL(fileURLWithPath: infoPath)) else {
+                return nil
+            }
+            return ApplicationBundleMetadataReader.metadata(
+                from: plistData,
+                localizedInfo: Bundle(path: bundlePath)?.localizedInfoDictionary
+            )
+        }
     }
 
     static func launchServicesStoreIdentifiers() -> [String] {
