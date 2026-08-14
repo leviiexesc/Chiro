@@ -55,28 +55,7 @@ Những build không có trong bảng sẽ được đánh dấu là không hỗ
 - Các chức năng trên thiết bị yêu cầu ứng dụng được ký bằng **chứng chỉ doanh nghiệp**.
 - Không hỗ trợ SideStore, AltStore, 3uTools hoặc LiveContainer.
 - Bundle ID `com.apple.mobile.MobileHouseArrest` được giữ có chủ đích cho luồng MHA-C2.
-- Repository không chứa chứng chỉ, provisioning profile, ứng dụng đã ký hoặc tệp IPA.
-
-## Build dự án
-
-```sh
-git clone https://github.com/YangJiiii/3105.git
-cd 3105
-open ThreeOneOSFive.xcodeproj
-```
-
-Chọn scheme `3105` trong Xcode. Có thể kiểm tra bản Simulator unsigned bằng lệnh:
-
-```sh
-xcodebuild \
-  -project ThreeOneOSFive.xcodeproj \
-  -scheme 3105 \
-  -configuration Debug \
-  -sdk iphonesimulator \
-  -destination 'generic/platform=iOS Simulator' \
-  CODE_SIGNING_ALLOWED=NO \
-  build
-```
+- Cây mã nguồn không chứa chứng chỉ, provisioning profile, ứng dụng đã ký hoặc IPA; phần Release có thể cung cấp IPA unsigned.
 
 ## Tác giả và ghi công
 

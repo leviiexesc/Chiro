@@ -18,7 +18,6 @@
 <p align="center">
   <a href="README.vi.md">Tiếng Việt</a> ·
   <a href="#compatibility">Compatibility</a> ·
-  <a href="#building">Building</a> ·
   <a href="#license">License</a>
 </p>
 
@@ -63,36 +62,7 @@ Unlisted builds, including iOS 27 beta 5 and newer, are marked unsupported rathe
 - Device functionality requires signing with an **enterprise certificate**.
 - SideStore, AltStore, 3uTools, and LiveContainer are not supported installation paths.
 - The target bundle identifier is intentionally `com.apple.mobile.MobileHouseArrest`; changing it can break the MHA-C2 app-container workflow.
-- The repository does not contain certificates, provisioning profiles, signed applications, or IPA files.
-
-## Building
-
-Requirements:
-
-- macOS with Xcode
-- iOS 16 SDK or newer for compilation
-- An enterprise signing setup for device testing
-
-Clone and open the project:
-
-```sh
-git clone https://github.com/YangJiiii/3105.git
-cd 3105
-open ThreeOneOSFive.xcodeproj
-```
-
-Select the `3105` scheme in Xcode. For an unsigned simulator build:
-
-```sh
-xcodebuild \
-  -project ThreeOneOSFive.xcodeproj \
-  -scheme 3105 \
-  -configuration Debug \
-  -sdk iphonesimulator \
-  -destination 'generic/platform=iOS Simulator' \
-  CODE_SIGNING_ALLOWED=NO \
-  build
-```
+- The source tree does not contain certificates, provisioning profiles, signed applications, or IPA files; release assets may provide an unsigned IPA.
 
 ## Project layout
 
