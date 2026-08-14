@@ -81,6 +81,8 @@ enum PatchPackageError: Error, Equatable {
     case symbolicLinkUnsupported
     case applyFailed
     case restoreFailed
+    case invalidImportLink
+    case remoteImportFailed
 }
 
 extension PatchPackageError: LocalizedError {
@@ -99,6 +101,8 @@ extension PatchPackageError: LocalizedError {
         case .symbolicLinkUnsupported: return "patch.error.symlink"
         case .applyFailed: return "patch.error.apply"
         case .restoreFailed: return "patch.error.restore"
+        case .invalidImportLink: return "patch.error.invalid_import_link"
+        case .remoteImportFailed: return "patch.error.remote_import"
         }
     }
 
@@ -119,10 +123,6 @@ extension PatchPackageError: LocalizedError {
 }
 
 enum PatchPackageLimits {
-    static let maximumRuleCount = 64
-    static let maximumReplacementBytes = 64 * 1_024 * 1_024
-    static let maximumTotalReplacementBytes = 256 * 1_024 * 1_024
-    static let maximumPackageBytes = 260 * 1_024 * 1_024
     static let maximumPathBytes = 4_096
     static let maximumPasswordBytes = 1_024
     static let minimumKDFIterations = 100_000

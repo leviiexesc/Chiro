@@ -52,8 +52,7 @@ enum PatchTransaction {
         beforeWrite: ((Int) throws -> Void)? = nil,
         fileManager: FileManager = .default
     ) throws -> PatchTransactionReceipt {
-        guard !project.rules.isEmpty,
-              project.rules.count <= PatchPackageLimits.maximumRuleCount else {
+        guard !project.rules.isEmpty else {
             throw PatchPackageError.invalidProject
         }
 

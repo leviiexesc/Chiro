@@ -113,12 +113,7 @@ enum PatchDraftService {
         fileManager: FileManager = .default
     ) throws -> PatchProjectDraft {
         let canonicalBundleID = try PatchPathValidator.canonicalBundleIdentifier(bundleID)
-        guard !candidates.isEmpty,
-              candidates.count <= PatchPackageLimits.maximumRuleCount else {
-            throw candidates.count > PatchPackageLimits.maximumRuleCount
-                ? PatchPackageError.sizeLimitExceeded
-                : PatchPackageError.invalidProject
-        }
+        guard !candidates.isEmpty else { throw PatchPackageError.invalidProject }
 
         var rules: [PatchRule] = []
         var seenPaths = Set<String>()

@@ -109,7 +109,17 @@ struct PatchProjectsView: View {
                     dismissButton: .default(Text(language.text("common.ok")))
                 )
             }
+            .onAppear(perform: consumeExternalImport)
+            .onChange(of: draftCoordinator.importRequest?.id) { _ in
+                consumeExternalImport()
+            }
         }
+    }
+
+    private func consumeExternalImport() {
+        guard let request = draftCoordinator.importRequest else { return }
+        draftCoordinator.clearImport()
+        store.importPackage(from: request.source)
     }
 
     @ViewBuilder

@@ -60,6 +60,9 @@ struct ContentView: View {
         .onChange(of: patchDraftCoordinator.request?.id) { requestID in
             if requestID != nil { selectedTab = 2 }
         }
+        .onChange(of: patchDraftCoordinator.importRequest?.id) { requestID in
+            if requestID != nil { selectedTab = 2 }
+        }
     }
 }
 

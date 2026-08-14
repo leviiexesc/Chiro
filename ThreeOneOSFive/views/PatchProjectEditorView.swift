@@ -302,18 +302,14 @@ struct PatchRuleEditorView: View {
             defer { if hasAccess { url.stopAccessingSecurityScopedResource() } }
             do {
                 let values = try url.resourceValues(
-                    forKeys: [.fileSizeKey, .isDirectoryKey, .isSymbolicLinkKey]
+                    forKeys: [.isRegularFileKey, .isDirectoryKey, .isSymbolicLinkKey]
                 )
                 guard values.isDirectory != true,
                       values.isSymbolicLink != true,
-                      let size = values.fileSize,
-                      size <= PatchPackageLimits.maximumReplacementBytes else {
-                    throw PatchPackageError.sizeLimitExceeded
+                      values.isRegularFile == true else {
+                    throw PatchPackageError.invalidProject
                 }
                 let importedData = try Data(contentsOf: url, options: .mappedIfSafe)
-                guard importedData.count <= PatchPackageLimits.maximumReplacementBytes else {
-                    throw PatchPackageError.sizeLimitExceeded
-                }
                 DispatchQueue.main.async {
                     replacementData = importedData
                     replacementFilename = url.lastPathComponent

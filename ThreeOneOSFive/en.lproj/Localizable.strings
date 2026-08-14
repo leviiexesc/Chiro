@@ -62,6 +62,10 @@
 "cleaner.result_message" = "Freed %@ by removing %lld files. %lld items or apps could not be cleaned.";
 "cleaner.accessibility_selected" = "Selected";
 "cleaner.accessibility_not_selected" = "Not selected";
+"cleaner.sort" = "Sort by size";
+"cleaner.sort_largest_first" = "Largest to Smallest";
+"cleaner.sort_smallest_first" = "Smallest to Largest";
+"cleaner.select_all_results" = "Select All Results";
 
 "patch.title" = "Patches";
 "patch.add" = "Add patch project";
@@ -98,7 +102,7 @@
 "patch.folder_empty" = "No Files";
 "patch.folder_empty_message" = "This folder does not contain any regular files that can be added to a patch.";
 "patch.selected_count" = "%lld selected";
-"patch.folder_selection_footer" = "Select up to %lld target paths. You will choose each replacement file in the patch editor.";
+"patch.folder_selection_footer" = "Select the target paths you need. You will choose each replacement file in the patch editor.";
 "patch.select_all" = "Select All";
 "patch.deselect_all" = "Deselect All";
 "patch.preparing_from_browser" = "Preparing patch paths…";
@@ -137,6 +141,8 @@
 "patch.error.symlink" = "Patch targets cannot pass through symbolic links.";
 "patch.error.apply" = "The patch could not be applied. Any earlier writes were rolled back.";
 "patch.error.restore" = "The originals could not be restored safely. No unverified target was overwritten.";
+"patch.error.invalid_import_link" = "This patch import link is invalid. Use a secure HTTPS link to a .3105 package.";
+"patch.error.remote_import" = "The patch could not be downloaded securely. Check the link and try again.";
 
 "accessibility.open_logs" = "Open logs";
 "accessibility.open_settings" = "Open settings";
@@ -313,6 +319,36 @@
 "browser.import_done_title" = "Import Complete";
 "browser.import_cancelled_title" = "Import Cancelled";
 "browser.import_summary" = "%lld imported, %lld replaced, %lld failed.";
+"browser.select" = "Select";
+"browser.selected_count" = "%lld selected";
+"browser.copy" = "Copy";
+"browser.move" = "Move";
+"browser.share" = "Share";
+"browser.paste" = "Paste";
+"browser.paste_count" = "Paste %lld items here";
+"browser.clear_clipboard" = "Clear pending items";
+"browser.copy_ready" = "Ready to copy";
+"browser.move_ready" = "Choose a destination";
+"browser.create_zip" = "ZIP";
+"browser.default_archive_name" = "Archive.zip";
+"browser.archiving" = "Creating ZIP…";
+"browser.archive_done_title" = "ZIP Created";
+"browser.archive_done_message" = "%@ was created in this folder.";
+"browser.delete_multiple_message" = "%lld selected items and their contents will be permanently deleted.";
+"browser.transfer_conflict_title" = "Item Already Exists";
+"browser.transfer_conflict_message" = "An item named “%@” already exists in this folder.";
+"browser.keep_both" = "Keep Both";
+"browser.keep_both_all" = "Keep Both for All";
+"browser.copying" = "Copying…";
+"browser.moving" = "Moving…";
+"browser.transfer_done_title" = "File Operation Complete";
+"browser.transfer_cancelled_title" = "File Operation Cancelled";
+"browser.transfer_summary" = "%lld copied, %lld moved, %lld replaced, %lld renamed, %lld failed.";
+"browser.error_recursive_destination" = "A folder cannot be copied or moved into itself.";
+"browser.error_copy" = "The selected items could not be copied safely.";
+"browser.error_move" = "The selected items could not be moved safely.";
+"browser.error_archive" = "The ZIP archive could not be created. A file may be unavailable or exceed the ZIP format limit.";
+"browser.preview_error" = "This file cannot be previewed.";
 
 "tab.wallpapers" = "Wallpapers";
 "wallpaper.title" = "Wallpaper Lab";

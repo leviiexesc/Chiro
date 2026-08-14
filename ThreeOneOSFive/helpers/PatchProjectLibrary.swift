@@ -73,12 +73,11 @@ enum PatchProjectLibrary {
     }
 
     static func readPackage(at url: URL) throws -> Data {
-        let values = try url.resourceValues(forKeys: [.isDirectoryKey, .fileSizeKey, .isSymbolicLinkKey])
+        let values = try url.resourceValues(forKeys: [.isDirectoryKey, .isRegularFileKey, .isSymbolicLinkKey])
         guard values.isDirectory != true,
               values.isSymbolicLink != true,
-              let fileSize = values.fileSize,
-              fileSize <= PatchPackageLimits.maximumPackageBytes else {
-            throw PatchPackageError.sizeLimitExceeded
+              values.isRegularFile == true else {
+            throw PatchPackageError.invalidProject
         }
         return try Data(contentsOf: url, options: .mappedIfSafe)
     }
@@ -89,9 +88,6 @@ enum PatchProjectLibrary {
         existingURL: URL? = nil,
         fileManager: FileManager = .default
     ) throws -> URL {
-        guard data.count <= PatchPackageLimits.maximumPackageBytes else {
-            throw PatchPackageError.sizeLimitExceeded
-        }
         let destination: URL
         if let existingURL {
             destination = existingURL

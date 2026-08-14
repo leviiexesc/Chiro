@@ -4,6 +4,7 @@ import SwiftUI
 struct ThreeOneOSFiveApp: App {
     @StateObject private var appState = AppState()
     @StateObject private var patchDraftCoordinator = PatchDraftCoordinator()
+    @StateObject private var fileOperationCoordinator = FileOperationCoordinator()
     @AppStorage(AppLanguage.storageKey) private var languageCode = AppLanguage.english.rawValue
 
     private var language: AppLanguage {
@@ -15,10 +16,14 @@ struct ThreeOneOSFiveApp: App {
             ContentView()
                 .environmentObject(appState)
                 .environmentObject(patchDraftCoordinator)
+                .environmentObject(fileOperationCoordinator)
                 .environment(\.appLanguage, language)
                 .environment(\.locale, language.locale)
                 .onAppear {
                     appState.detectSupport()
+                }
+                .onOpenURL { url in
+                    patchDraftCoordinator.presentImport(url)
                 }
         }
     }

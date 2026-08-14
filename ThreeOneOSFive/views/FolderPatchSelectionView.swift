@@ -116,10 +116,7 @@ struct FolderPatchSelectionView: View {
                 Text(language.text("patch.selected_count", Int64(selectedIDs.count)))
                     .textCase(nil)
             } footer: {
-                Text(language.text(
-                    "patch.folder_selection_footer",
-                    Int64(PatchPackageLimits.maximumRuleCount)
-                ))
+                Text(language.text("patch.folder_selection_footer"))
             }
         }
         .listStyle(.plain)
@@ -147,9 +144,7 @@ struct FolderPatchSelectionView: View {
                 switch result {
                 case .success(let loaded):
                     candidates = loaded
-                    if loaded.count <= PatchPackageLimits.maximumRuleCount {
-                        selectedIDs = Set(loaded.map(\.id))
-                    }
+                    selectedIDs = Set(loaded.map(\.id))
                 case .failure(let error as PatchPackageError):
                     validationMessageKey = error.localizationKey
                 case .failure:
@@ -162,10 +157,6 @@ struct FolderPatchSelectionView: View {
     private func toggle(_ candidate: PatchDraftCandidate) {
         validationMessageKey = nil
         if selectedIDs.remove(candidate.id) != nil { return }
-        guard selectedIDs.count < PatchPackageLimits.maximumRuleCount else {
-            validationMessageKey = "patch.error.size_limit"
-            return
-        }
         selectedIDs.insert(candidate.id)
     }
 
@@ -173,10 +164,6 @@ struct FolderPatchSelectionView: View {
         validationMessageKey = nil
         if selectedIDs.count == candidates.count {
             selectedIDs.removeAll()
-            return
-        }
-        guard candidates.count <= PatchPackageLimits.maximumRuleCount else {
-            validationMessageKey = "patch.error.size_limit"
             return
         }
         selectedIDs = Set(candidates.map(\.id))

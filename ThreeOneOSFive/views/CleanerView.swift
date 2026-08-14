@@ -6,6 +6,7 @@ struct CleanerView: View {
     @State private var records: [CleanerAppRecord] = []
     @State private var selectedBundleIDs = Set<String>()
     @State private var searchText = ""
+    @State private var sortOrder: CleanerSortOrder = .largestFirst
     @State private var isScanning = false
     @State private var isCleaning = false
     @State private var scannedAppCount = 0
@@ -14,17 +15,37 @@ struct CleanerView: View {
     @State private var activeAlert: CleanerAlert?
 
     private var filteredRecords: [CleanerAppRecord] {
-        guard !searchText.isEmpty else { return records }
-        let query = searchText.folding(
-            options: [.caseInsensitive, .diacriticInsensitive],
-            locale: language.locale
-        )
-        return records.filter {
-            $0.app.displayName.folding(
+        let matchingRecords: [CleanerAppRecord]
+        if searchText.isEmpty {
+            matchingRecords = records
+        } else {
+            let query = searchText.folding(
                 options: [.caseInsensitive, .diacriticInsensitive],
                 locale: language.locale
-            ).contains(query) || $0.app.bundleID.lowercased().contains(query.lowercased())
+            )
+            matchingRecords = records.filter {
+                $0.app.displayName.folding(
+                    options: [.caseInsensitive, .diacriticInsensitive],
+                    locale: language.locale
+                ).contains(query) || $0.app.bundleID.lowercased().contains(query.lowercased())
+            }
         }
+
+        return CleanerCatalog.sorted(
+            matchingRecords,
+            order: sortOrder,
+            size: { $0.usage.totalBytes },
+            displayName: { $0.app.displayName },
+            stableID: { $0.id }
+        )
+    }
+
+    private var visibleBundleIDs: [String] {
+        filteredRecords.map(\.id)
+    }
+
+    private var areAllVisibleRecordsSelected: Bool {
+        !visibleBundleIDs.isEmpty && visibleBundleIDs.allSatisfy(selectedBundleIDs.contains)
     }
 
     private var totalAvailableBytes: Int64 {
@@ -181,23 +202,10 @@ struct CleanerView: View {
     private var toolbarContent: some ToolbarContent {
         if !records.isEmpty {
             ToolbarItem(placement: .navigationBarLeading) {
-                Menu {
-                    Button(language.text("patch.select_all")) {
-                        selectedBundleIDs = Set(records.map(\.id))
-                    }
-                    .disabled(selectedBundleIDs.count == records.count)
-
-                    Button(language.text("patch.deselect_all")) {
-                        selectedBundleIDs.removeAll()
-                    }
-                    .disabled(selectedBundleIDs.isEmpty)
-                } label: {
-                    Image(systemName: "checklist")
-                }
-                .disabled(isBusy)
-                .accessibilityLabel(language.text("cleaner.selection_actions"))
+                selectionMenu
             }
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                sortMenu
                 refreshButton
             }
         } else {
@@ -205,6 +213,58 @@ struct CleanerView: View {
                 refreshButton
             }
         }
+    }
+
+    private var selectionMenu: some View {
+        Menu {
+            Button {
+                selectedBundleIDs = CleanerCatalog.selectingAllVisible(
+                    visibleBundleIDs,
+                    preserving: selectedBundleIDs
+                )
+            } label: {
+                Label(
+                    searchText.isEmpty
+                        ? language.text("patch.select_all")
+                        : language.text("cleaner.select_all_results"),
+                    systemImage: "checkmark.circle"
+                )
+            }
+            .disabled(areAllVisibleRecordsSelected)
+
+            Button {
+                selectedBundleIDs.removeAll()
+            } label: {
+                Label(language.text("patch.deselect_all"), systemImage: "circle")
+            }
+            .disabled(selectedBundleIDs.isEmpty)
+        } label: {
+            Image(systemName: "checklist")
+        }
+        .disabled(isBusy)
+        .accessibilityLabel(language.text("cleaner.selection_actions"))
+    }
+
+    private var sortMenu: some View {
+        Menu {
+            Picker(language.text("cleaner.sort"), selection: $sortOrder) {
+                Label(
+                    language.text("cleaner.sort_largest_first"),
+                    systemImage: "arrow.down"
+                )
+                .tag(CleanerSortOrder.largestFirst)
+
+                Label(
+                    language.text("cleaner.sort_smallest_first"),
+                    systemImage: "arrow.up"
+                )
+                .tag(CleanerSortOrder.smallestFirst)
+            }
+        } label: {
+            Image(systemName: "arrow.up.arrow.down")
+        }
+        .disabled(isBusy)
+        .accessibilityLabel(language.text("cleaner.sort"))
     }
 
     private var refreshButton: some View {

@@ -62,6 +62,10 @@
 "cleaner.result_message" = "已释放 %@，删除 %lld 个文件。有 %lld 个项目或应用无法清理。";
 "cleaner.accessibility_selected" = "已选择";
 "cleaner.accessibility_not_selected" = "未选择";
+"cleaner.sort" = "按大小排序";
+"cleaner.sort_largest_first" = "从大到小";
+"cleaner.sort_smallest_first" = "从小到大";
+"cleaner.select_all_results" = "选择全部结果";
 
 "patch.title" = "补丁";
 "patch.add" = "添加补丁项目";
@@ -98,7 +102,7 @@
 "patch.folder_empty" = "没有文件";
 "patch.folder_empty_message" = "此文件夹不包含可添加到补丁的普通文件。";
 "patch.selected_count" = "已选择 %lld 个";
-"patch.folder_selection_footer" = "最多选择 %lld 个目标路径。请在补丁编辑器中分别选择替换文件。";
+"patch.folder_selection_footer" = "选择所需的目标路径。请在补丁编辑器中分别选择替换文件。";
 "patch.select_all" = "全选";
 "patch.deselect_all" = "取消全选";
 "patch.preparing_from_browser" = "正在准备补丁路径…";
@@ -137,6 +141,8 @@
 "patch.error.symlink" = "补丁目标路径不能经过符号链接。";
 "patch.error.apply" = "无法应用补丁。之前的所有写入均已回滚。";
 "patch.error.restore" = "无法安全恢复原始文件。未覆盖任何未经验证的目标。";
+"patch.error.invalid_import_link" = "补丁导入链接无效。请使用指向 .3105 软件包的安全 HTTPS 链接。";
+"patch.error.remote_import" = "无法安全下载补丁。请检查链接后重试。";
 
 "accessibility.open_logs" = "打开日志";
 "accessibility.open_settings" = "打开设置";
@@ -313,6 +319,36 @@
 "browser.import_done_title" = "导入完成";
 "browser.import_cancelled_title" = "导入已取消";
 "browser.import_summary" = "已导入 %lld 个，已替换 %lld 个，失败 %lld 个。";
+"browser.select" = "选择";
+"browser.selected_count" = "已选择 %lld 个";
+"browser.copy" = "复制";
+"browser.move" = "移动";
+"browser.share" = "共享";
+"browser.paste" = "粘贴";
+"browser.paste_count" = "在此粘贴 %lld 个项目";
+"browser.clear_clipboard" = "清除待处理项目";
+"browser.copy_ready" = "已准备复制";
+"browser.move_ready" = "选择目标文件夹";
+"browser.create_zip" = "压缩为 ZIP";
+"browser.default_archive_name" = "归档.zip";
+"browser.archiving" = "正在创建 ZIP…";
+"browser.archive_done_title" = "ZIP 已创建";
+"browser.archive_done_message" = "已在此文件夹中创建 %@。";
+"browser.delete_multiple_message" = "将永久删除选中的 %lld 个项目及其内容。";
+"browser.transfer_conflict_title" = "项目已存在";
+"browser.transfer_conflict_message" = "此文件夹中已存在名为“%@”的项目。";
+"browser.keep_both" = "保留两者";
+"browser.keep_both_all" = "全部保留两者";
+"browser.copying" = "正在复制…";
+"browser.moving" = "正在移动…";
+"browser.transfer_done_title" = "文件操作完成";
+"browser.transfer_cancelled_title" = "文件操作已取消";
+"browser.transfer_summary" = "已复制 %lld 个，已移动 %lld 个，已替换 %lld 个，已重命名 %lld 个，失败 %lld 个。";
+"browser.error_recursive_destination" = "无法将文件夹复制或移动到其自身内部。";
+"browser.error_copy" = "无法安全复制所选项目。";
+"browser.error_move" = "无法安全移动所选项目。";
+"browser.error_archive" = "无法创建 ZIP。某个文件可能不可用或超出 ZIP 格式限制。";
+"browser.preview_error" = "无法预览此文件。";
 
 "tab.wallpapers" = "壁纸";
 "wallpaper.title" = "壁纸实验室";

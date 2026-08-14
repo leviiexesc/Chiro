@@ -62,6 +62,10 @@
 "cleaner.result_message" = "Đã giải phóng %@ và xóa %lld tệp. Có %lld mục hoặc ứng dụng không thể dọn.";
 "cleaner.accessibility_selected" = "Đã chọn";
 "cleaner.accessibility_not_selected" = "Chưa chọn";
+"cleaner.sort" = "Sắp xếp theo dung lượng";
+"cleaner.sort_largest_first" = "Cao đến thấp";
+"cleaner.sort_smallest_first" = "Thấp đến cao";
+"cleaner.select_all_results" = "Chọn tất cả kết quả";
 
 "patch.title" = "Patch";
 "patch.add" = "Thêm dự án patch";
@@ -98,7 +102,7 @@
 "patch.folder_empty" = "Không có tệp";
 "patch.folder_empty_message" = "Thư mục này không có tệp thông thường nào có thể thêm vào patch.";
 "patch.selected_count" = "Đã chọn %lld";
-"patch.folder_selection_footer" = "Chọn tối đa %lld đường dẫn đích. Bạn sẽ chọn riêng tệp thay thế trong trình sửa patch.";
+"patch.folder_selection_footer" = "Chọn các đường dẫn đích bạn cần. Bạn sẽ chọn riêng tệp thay thế trong trình sửa patch.";
 "patch.select_all" = "Chọn tất cả";
 "patch.deselect_all" = "Bỏ chọn tất cả";
 "patch.preparing_from_browser" = "Đang chuẩn bị đường dẫn patch…";
@@ -137,6 +141,8 @@
 "patch.error.symlink" = "Đường dẫn patch không được đi qua liên kết tượng trưng.";
 "patch.error.apply" = "Không thể áp dụng patch. Mọi file đã ghi trước đó đã được rollback.";
 "patch.error.restore" = "Không thể khôi phục file gốc an toàn. App không ghi đè đích chưa được xác minh.";
+"patch.error.invalid_import_link" = "Liên kết nhập patch không hợp lệ. Hãy dùng liên kết HTTPS an toàn tới gói .3105.";
+"patch.error.remote_import" = "Không thể tải patch một cách an toàn. Hãy kiểm tra liên kết và thử lại.";
 
 "accessibility.open_logs" = "Mở nhật ký";
 "accessibility.open_settings" = "Mở cài đặt";
@@ -313,6 +319,36 @@
 "browser.import_done_title" = "Đã import xong";
 "browser.import_cancelled_title" = "Đã hủy import";
 "browser.import_summary" = "%lld tệp mới, %lld tệp đã thay thế, %lld tệp lỗi.";
+"browser.select" = "Chọn";
+"browser.selected_count" = "Đã chọn %lld";
+"browser.copy" = "Sao chép";
+"browser.move" = "Di chuyển";
+"browser.share" = "Chia sẻ";
+"browser.paste" = "Dán";
+"browser.paste_count" = "Dán %lld mục vào đây";
+"browser.clear_clipboard" = "Bỏ các mục đang chờ";
+"browser.copy_ready" = "Sẵn sàng sao chép";
+"browser.move_ready" = "Chọn thư mục đích";
+"browser.create_zip" = "Nén ZIP";
+"browser.default_archive_name" = "Lưu trữ.zip";
+"browser.archiving" = "Đang tạo ZIP…";
+"browser.archive_done_title" = "Đã tạo ZIP";
+"browser.archive_done_message" = "Đã tạo %@ trong thư mục này.";
+"browser.delete_multiple_message" = "%lld mục đã chọn và toàn bộ nội dung bên trong sẽ bị xóa vĩnh viễn.";
+"browser.transfer_conflict_title" = "Mục đã tồn tại";
+"browser.transfer_conflict_message" = "Đã có mục tên “%@” trong thư mục này.";
+"browser.keep_both" = "Giữ cả hai";
+"browser.keep_both_all" = "Giữ cả hai cho tất cả";
+"browser.copying" = "Đang sao chép…";
+"browser.moving" = "Đang di chuyển…";
+"browser.transfer_done_title" = "Đã hoàn tất thao tác";
+"browser.transfer_cancelled_title" = "Đã hủy thao tác";
+"browser.transfer_summary" = "%lld mục đã sao chép, %lld mục đã di chuyển, %lld mục đã thay thế, %lld mục được đổi tên, %lld mục lỗi.";
+"browser.error_recursive_destination" = "Không thể sao chép hoặc di chuyển một thư mục vào chính nó.";
+"browser.error_copy" = "Không thể sao chép an toàn các mục đã chọn.";
+"browser.error_move" = "Không thể di chuyển an toàn các mục đã chọn.";
+"browser.error_archive" = "Không thể tạo tệp ZIP. Có thể một tệp không còn truy cập được hoặc vượt giới hạn định dạng ZIP.";
+"browser.preview_error" = "Không thể xem trước tệp này.";
 
 "tab.wallpapers" = "Hình nền";
 "wallpaper.title" = "Wallpaper Lab";

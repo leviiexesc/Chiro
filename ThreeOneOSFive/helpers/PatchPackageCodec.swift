@@ -217,13 +217,8 @@ enum PatchPackageCodec {
         guard !name.isEmpty, name.utf8.count <= 120, !project.rules.isEmpty else {
             throw PatchPackageError.invalidProject
         }
-        guard project.rules.count <= PatchPackageLimits.maximumRuleCount else {
-            throw PatchPackageError.sizeLimitExceeded
-        }
-
         var targets = Set<String>()
         var ruleIDs = Set<UUID>()
-        var totalBytes = 0
         for rule in project.rules {
             let bundleID = try PatchPathValidator.canonicalBundleIdentifier(rule.bundleID)
             let relativePath = try PatchPathValidator.canonicalRelativePath(rule.relativePath)
@@ -238,29 +233,17 @@ enum PatchPackageCodec {
             else {
                 throw PatchPackageError.invalidProject
             }
-            guard rule.replacementData.count <= PatchPackageLimits.maximumReplacementBytes else {
-                throw PatchPackageError.sizeLimitExceeded
-            }
             let targetKey = bundleID + "\0" + relativePath
             guard targets.insert(targetKey).inserted else {
                 throw PatchPackageError.duplicateTarget
             }
-            let (nextTotal, overflow) = totalBytes.addingReportingOverflow(rule.replacementData.count)
-            guard !overflow, nextTotal <= PatchPackageLimits.maximumTotalReplacementBytes else {
-                throw PatchPackageError.sizeLimitExceeded
-            }
-            totalBytes = nextTotal
         }
     }
 
     private static func parseEnvelope(_ data: Data) throws -> Envelope {
-        guard data.count <= PatchPackageLimits.maximumPackageBytes,
-              data.count > magic.count,
+        guard data.count > magic.count,
               data.prefix(magic.count) == magic
         else {
-            if data.count > PatchPackageLimits.maximumPackageBytes {
-                throw PatchPackageError.sizeLimitExceeded
-            }
             throw PatchPackageError.unsupportedFormat
         }
         let encoded = data.dropFirst(magic.count)
@@ -306,9 +289,6 @@ enum PatchPackageCodec {
         let body = try encoder.encode(envelope)
         var result = magic
         result.append(body)
-        guard result.count <= PatchPackageLimits.maximumPackageBytes else {
-            throw PatchPackageError.sizeLimitExceeded
-        }
         return result
     }
 

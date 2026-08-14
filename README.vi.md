@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img alt="Phiên bản" src="https://img.shields.io/badge/phiên%20bản-1.0%20beta%203-E6753A?style=flat-square">
+  <img alt="Phiên bản" src="https://img.shields.io/badge/phiên%20bản-1.0-E6753A?style=flat-square">
   <img alt="iOS" src="https://img.shields.io/badge/iOS-26.0–26.6.1%20%7C%2027%20beta%201–4-222222?style=flat-square">
   <img alt="Ngôn ngữ" src="https://img.shields.io/badge/ngôn%20ngữ-English%20%7C%20Tiếng%20Việt%20%7C%20简体中文-E6753A?style=flat-square">
 </p>
@@ -17,7 +17,7 @@
 <p align="center"><a href="README.md">English</a> · <a href="#giấy-phép">Giấy phép</a></p>
 
 > [!WARNING]
-> 3105 đang ở giai đoạn beta. Chỉ sử dụng trên thiết bị và dữ liệu thuộc quyền sở hữu của bạn, đồng thời luôn sao lưu trước khi thay đổi tệp hệ thống hoặc dữ liệu ứng dụng.
+> 3105 là phần mềm nghiên cứu để quản lý thiết bị cá nhân. Chỉ sử dụng trên thiết bị và dữ liệu thuộc quyền sở hữu của bạn, đồng thời luôn sao lưu trước khi thay đổi dữ liệu ứng dụng.
 
 ## Giao diện
 
@@ -32,9 +32,9 @@
 ## Tính năng chính
 
 - Duyệt dữ liệu ứng dụng theo **bundle identifier**, không phụ thuộc UUID container của từng máy.
-- Trình quản lý tệp có tìm kiếm, nhập nhiều tệp, đổi tên, xóa, tạo tệp/thư mục và xử lý trùng tên.
-- Tạo và nhập dự án patch `.3105`, hỗ trợ nhiều quy tắc, tệp/thư mục và mật khẩu tùy chọn.
-- Dọn dẹp giới hạn trong `Library/Caches` và `tmp`, luôn hiển thị cảnh báo trước khi xóa.
+- Trình quản lý tệp có tìm kiếm, xem trước, chia sẻ, nhập nhiều tệp, sao chép, di chuyển, dán, đổi tên, xóa, tạo tệp/thư mục, nén ZIP và xử lý trùng tên.
+- Tạo và nhập dự án patch `.3105` theo bundle, hỗ trợ nhiều quy tắc, tệp/thư mục, mật khẩu tùy chọn và nhập từ Files hoặc liên kết website bảo mật.
+- Dọn dẹp giới hạn trong `Library/Caches` và `tmp`, hỗ trợ sắp xếp dung lượng và chọn nhiều ứng dụng, luôn hiển thị cảnh báo trước khi xóa.
 - Nhập gói hình nền `.tendies`, xác thực payload và chỉ reset nội dung do 3105 cài đặt.
 - 3105 không cài jailbreak, bootstrap hay daemon thường trú và không inject mã vào ứng dụng bên thứ ba. Do ứng dụng vẫn dùng khai thác thiết bị và có thể sửa dữ liệu app, không thể bảo đảm vượt qua mọi cơ chế kiểm tra tính toàn vẹn hoặc phát hiện jailbreak.
 - Hỗ trợ tiếng Anh, tiếng Việt và tiếng Trung giản thể.

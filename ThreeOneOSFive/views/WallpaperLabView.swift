@@ -222,7 +222,7 @@ struct WallpaperLabView: View {
                 alert = WallpaperLabAlert(kind: .install(selectedPackage))
             }
         } label: {
-            Label(language.text("wallpaper.install"), systemImage: "square.and.arrow.down")
+            Text(language.text("wallpaper.install"))
                 .fontWeight(.semibold)
                 .frame(maxWidth: .infinity, minHeight: 44)
         }
