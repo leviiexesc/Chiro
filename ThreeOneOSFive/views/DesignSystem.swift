@@ -13,6 +13,9 @@ enum AppTheme {
     static let pageInset: CGFloat = 16
     static let rowIconSize: CGFloat = 17
     static let rowIconFrame: CGFloat = 28
+    static let fileRowIconSize: CGFloat = 18
+    static let fileRowIconFrame: CGFloat = 32
+    static let fileRowHeight: CGFloat = 52
     static let appIconSize: CGFloat = 32
     static let emptyIconSize: CGFloat = 30
     static let selectionIconSize: CGFloat = 18
@@ -21,16 +24,18 @@ enum AppTheme {
 struct AppRowIcon: View {
     let systemName: String
     var tint: Color = AppTheme.accent
+    var symbolSize: CGFloat = AppTheme.rowIconSize
+    var frameSize: CGFloat = AppTheme.rowIconFrame
 
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 7, style: .continuous)
                 .fill(tint.opacity(0.12))
             Image(systemName: systemName)
-                .font(.system(size: AppTheme.rowIconSize, weight: .medium))
+                .font(.system(size: symbolSize, weight: .medium))
                 .foregroundStyle(tint)
         }
-        .frame(width: AppTheme.rowIconFrame, height: AppTheme.rowIconFrame)
+        .frame(width: frameSize, height: frameSize)
         .accessibilityHidden(true)
     }
 }

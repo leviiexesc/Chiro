@@ -92,7 +92,7 @@ struct FileBrowserView: View {
                 }
             }
             .listStyle(.insetGrouped)
-            .environment(\.defaultMinListRowHeight, 44)
+            .environment(\.defaultMinListRowHeight, AppTheme.fileRowHeight)
             .scrollDismissesKeyboard(.interactively)
             .overlay {
                 Group {
@@ -366,7 +366,7 @@ struct FileBrowserView: View {
                 )
             }
             .buttonStyle(.plain)
-            .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 12))
+            .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 12))
         } else if entry.isDirectory {
             NavigationLink(
                 value: FileBrowserDestination(
@@ -379,7 +379,7 @@ struct FileBrowserView: View {
                 FileEntryRow(entry: entry, language: language, selectionState: nil)
             }
             .contextMenu { fileActions(for: entry) }
-            .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 12))
+            .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 12))
         } else {
             NavigationLink {
                 FileQuickLookView(file: entry)
@@ -388,7 +388,7 @@ struct FileBrowserView: View {
             }
             .contextMenu { fileActions(for: entry) }
             .accessibilityHint(language.text("browser.file_actions_hint"))
-            .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 12))
+            .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 12))
         }
     }
 
@@ -1459,15 +1459,20 @@ private struct FileEntryRow: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            AppRowIcon(systemName: symbol, tint: tint)
+            AppRowIcon(
+                systemName: symbol,
+                tint: tint,
+                symbolSize: AppTheme.fileRowIconSize,
+                frameSize: AppTheme.fileRowIconFrame
+            )
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(entry.name)
-                    .font(.subheadline.weight(.medium))
+                    .font(.body.weight(.medium))
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
                     .truncationMode(.middle)
                 Text(entry.isDirectory ? language.text("browser.folder") : entry.sizeText)
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
 
