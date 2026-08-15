@@ -366,7 +366,7 @@ struct FileBrowserView: View {
                 )
             }
             .buttonStyle(.plain)
-            .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 12))
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 12))
         } else if entry.isDirectory {
             NavigationLink(
                 value: FileBrowserDestination(
@@ -379,7 +379,7 @@ struct FileBrowserView: View {
                 FileEntryRow(entry: entry, language: language, selectionState: nil)
             }
             .contextMenu { fileActions(for: entry) }
-            .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 12))
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 12))
         } else {
             NavigationLink {
                 FileQuickLookView(file: entry)
@@ -388,7 +388,7 @@ struct FileBrowserView: View {
             }
             .contextMenu { fileActions(for: entry) }
             .accessibilityHint(language.text("browser.file_actions_hint"))
-            .listRowInsets(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 12))
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 12))
         }
     }
 
@@ -1458,7 +1458,7 @@ private struct FileEntryRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 11) {
             AppRowIcon(
                 systemName: symbol,
                 tint: tint,
@@ -1466,9 +1466,9 @@ private struct FileEntryRow: View {
                 frameSize: AppTheme.fileRowIconFrame
             )
 
-            VStack(alignment: .leading, spacing: 1) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(entry.name)
-                    .font(.body.weight(.medium))
+                    .font(.subheadline.weight(.semibold))
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
                     .truncationMode(.middle)
                 Text(entry.isDirectory ? language.text("browser.folder") : entry.sizeText)

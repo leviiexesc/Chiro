@@ -13,9 +13,9 @@ enum AppTheme {
     static let pageInset: CGFloat = 16
     static let rowIconSize: CGFloat = 17
     static let rowIconFrame: CGFloat = 28
-    static let fileRowIconSize: CGFloat = 18
-    static let fileRowIconFrame: CGFloat = 32
-    static let fileRowHeight: CGFloat = 52
+    static let fileRowIconSize: CGFloat = 17
+    static let fileRowIconFrame: CGFloat = 30
+    static let fileRowHeight: CGFloat = 60
     static let appIconSize: CGFloat = 32
     static let emptyIconSize: CGFloat = 30
     static let selectionIconSize: CGFloat = 18
