@@ -32,6 +32,8 @@
 "dashboard.unsupported_message" = "暂不支持 iOS %@。\n\n当前支持：\n• iOS 26.0–26.6.1\n• iOS 27.0 开发者 Beta 1–4\n• iOS 27.0 公开 Beta 1–2";
 "dashboard.installation" = "应用安装";
 "dashboard.enterprise_signing" = "3105 仅在使用企业证书签名时运行。不支持 SideStore、AltStore、3uTools 或 LiveContainer。";
+"dashboard.features" = "功能";
+"dashboard.features_footer" = "开启清理或壁纸后，该功能才会显示在应用导航中。";
 "tab.home" = "主页";
 "tab.files" = "文件";
 "tab.patches" = "补丁";

@@ -32,6 +32,8 @@
 "dashboard.unsupported_message" = "iOS %@ chưa được hỗ trợ.\n\nCác phiên bản hiện được hỗ trợ:\n• iOS 26.0–26.6.1\n• iOS 27.0 Developer Beta 1–4\n• iOS 27.0 Public Beta 1–2";
 "dashboard.installation" = "Cài đặt ứng dụng";
 "dashboard.enterprise_signing" = "3105 chỉ hoạt động khi được ký bằng chứng chỉ doanh nghiệp. Không hỗ trợ SideStore, AltStore, 3uTools hoặc LiveContainer.";
+"dashboard.features" = "Tính năng";
+"dashboard.features_footer" = "Bật Dọn dẹp hoặc Hình nền để hiển thị tính năng đó trong thanh điều hướng.";
 "tab.home" = "Trang chủ";
 "tab.files" = "Tệp";
 "tab.patches" = "Patch";

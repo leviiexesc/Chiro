@@ -5,6 +5,8 @@ struct ContentView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject private var patchDraftCoordinator: PatchDraftCoordinator
     @State private var tabNavigation: AppTabNavigationState
+    @AppStorage(FeatureVisibility.cleanerStorageKey) private var cleanerEnabled = true
+    @AppStorage(FeatureVisibility.wallpapersStorageKey) private var wallpapersEnabled = true
 
     init() {
 #if targetEnvironment(simulator)
@@ -42,11 +44,17 @@ struct ContentView: View {
         .onChange(of: patchDraftCoordinator.importRequest?.id) { requestID in
             if requestID != nil { tabNavigation.select(AppSection.patches.rawValue) }
         }
+        .onChange(of: cleanerEnabled) { _ in
+            tabNavigation.reconcileSelection(with: featureVisibility)
+        }
+        .onChange(of: wallpapersEnabled) { _ in
+            tabNavigation.reconcileSelection(with: featureVisibility)
+        }
     }
 
     private var compactLayout: some View {
         TabView(selection: tabSelection) {
-            ForEach(AppSection.allCases) { section in
+            ForEach(featureVisibility.visibleSections) { section in
                 sectionContent(section)
                     .tabItem {
                         Label(language.text(section.titleKey), systemImage: section.systemImage)
@@ -59,7 +67,7 @@ struct ContentView: View {
     private var regularLayout: some View {
         NavigationSplitView {
             List {
-                ForEach(AppSection.allCases) { section in
+                ForEach(featureVisibility.visibleSections) { section in
                     Button {
                         withAnimation(.easeInOut(duration: 0.18)) {
                             tabNavigation.select(section.rawValue)
@@ -94,7 +102,10 @@ struct ContentView: View {
     private func sectionContent(_ section: AppSection) -> some View {
         switch section {
         case .home:
-            DashboardView()
+            DashboardView(
+                cleanerEnabled: $cleanerEnabled,
+                wallpapersEnabled: $wallpapersEnabled
+            )
         case .files:
             AppDataBrowserView(
                 tabSession: filesTabSession
@@ -121,17 +132,16 @@ struct ContentView: View {
             set: { tabNavigation.setFilesTabs($0) }
         )
     }
+
+    private var featureVisibility: FeatureVisibility {
+        FeatureVisibility(
+            cleanerEnabled: cleanerEnabled,
+            wallpapersEnabled: wallpapersEnabled
+        )
+    }
 }
 
-private enum AppSection: Int, CaseIterable, Identifiable {
-    case home
-    case files
-    case patches
-    case cleaner
-    case wallpapers
-
-    var id: Int { rawValue }
-
+private extension AppSection {
     var titleKey: String {
         switch self {
         case .home: return "tab.home"
@@ -158,12 +168,15 @@ private struct DashboardView: View {
     @EnvironmentObject private var appState: AppState
     @State private var showSettings = false
     @State private var showLogs = false
+    @Binding var cleanerEnabled: Bool
+    @Binding var wallpapersEnabled: Bool
 
     var body: some View {
         NavigationStack {
             List {
                 deviceSection
                 signingSection
+                featuresSection
             }
             .navigationBarTitleDisplayMode(.inline)
             .tint(AppTheme.accent)
@@ -183,6 +196,21 @@ private struct DashboardView: View {
             }
             .sheet(isPresented: $showSettings) { SettingsView() }
             .sheet(isPresented: $showLogs) { LogView() }
+        }
+    }
+
+    private var featuresSection: some View {
+        Section {
+            Toggle(isOn: $cleanerEnabled) {
+                Label(language.text("tab.cleaner"), systemImage: "sparkles")
+            }
+            Toggle(isOn: $wallpapersEnabled) {
+                Label(language.text("tab.wallpapers"), systemImage: "photo.on.rectangle.angled")
+            }
+        } header: {
+            Text(language.text("dashboard.features"))
+        } footer: {
+            Text(language.text("dashboard.features_footer"))
         }
     }
 

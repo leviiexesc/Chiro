@@ -1,5 +1,38 @@
 import Foundation
 
+enum AppSection: Int, CaseIterable, Identifiable {
+    case home
+    case files
+    case patches
+    case cleaner
+    case wallpapers
+
+    var id: Int { rawValue }
+}
+
+struct FeatureVisibility: Equatable {
+    static let cleanerStorageKey = "feature.cleaner.enabled"
+    static let wallpapersStorageKey = "feature.wallpapers.enabled"
+
+    let cleanerEnabled: Bool
+    let wallpapersEnabled: Bool
+
+    var visibleSections: [AppSection] {
+        AppSection.allCases.filter(isVisible)
+    }
+
+    func isVisible(_ section: AppSection) -> Bool {
+        switch section {
+        case .cleaner:
+            return cleanerEnabled
+        case .wallpapers:
+            return wallpapersEnabled
+        case .home, .files, .patches:
+            return true
+        }
+    }
+}
+
 struct AppTabNavigationState: Equatable {
     private(set) var selectedTab: Int
     private(set) var filesTabs: FilesTabSession
@@ -28,6 +61,14 @@ struct AppTabNavigationState: Equatable {
 
     mutating func setFilesTabs(_ session: FilesTabSession) {
         filesTabs = session
+    }
+
+    mutating func reconcileSelection(with visibility: FeatureVisibility) {
+        guard let selectedSection = AppSection(rawValue: selectedTab),
+              visibility.isVisible(selectedSection) else {
+            selectedTab = AppSection.home.rawValue
+            return
+        }
     }
 }
 
