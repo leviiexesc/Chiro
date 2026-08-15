@@ -12,6 +12,7 @@ struct FileBrowserView: View {
     let title: String
     let bundleID: String?
     let isRoot: Bool
+    private let filesTabSession: Binding<FilesTabSession>?
     @State private var currentPath: String
     @State private var entries: [FileEntry] = []
     @State private var fileSearchText = ""
@@ -55,11 +56,17 @@ struct FileBrowserView: View {
         reduceMotion ? nil : .easeOut(duration: 0.20)
     }
 
-    init(containerPath: String, title: String, bundleID: String? = nil) {
+    init(
+        containerPath: String,
+        title: String,
+        bundleID: String? = nil,
+        filesTabSession: Binding<FilesTabSession>? = nil
+    ) {
         self.containerPath = containerPath
         self.title = title
         self.bundleID = bundleID
         self.isRoot = true
+        self.filesTabSession = filesTabSession
         _currentPath = State(initialValue: containerPath)
     }
 
@@ -98,6 +105,15 @@ struct FileBrowserView: View {
         }
         .navigationTitle(currentPath == containerPath ? title : (currentPath as NSString).lastPathComponent)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(for: FileBrowserDestination.self) { destination in
+            FileBrowserView(
+                containerPath: destination.containerPath,
+                startPath: destination.startPath,
+                title: destination.title,
+                bundleID: destination.bundleID,
+                filesTabSession: filesTabSession
+            )
+        }
         .searchable(
             text: $fileSearchText,
             placement: .navigationBarDrawer(displayMode: .always),
@@ -1549,11 +1565,18 @@ private struct FilePasteBar: View {
 }
 
 extension FileBrowserView {
-    init(containerPath: String, startPath: String, title: String, bundleID: String?) {
+    init(
+        containerPath: String,
+        startPath: String,
+        title: String,
+        bundleID: String?,
+        filesTabSession: Binding<FilesTabSession>? = nil
+    ) {
         self.containerPath = containerPath
         self.title = title
         self.bundleID = bundleID
         self.isRoot = false
+        self.filesTabSession = filesTabSession
         _currentPath = State(initialValue: startPath)
     }
 }

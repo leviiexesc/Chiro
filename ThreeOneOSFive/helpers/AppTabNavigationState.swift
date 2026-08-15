@@ -2,14 +2,16 @@ import Foundation
 
 struct AppTabNavigationState: Equatable {
     private(set) var selectedTab: Int
-    private(set) var filesNavigationPath: [FileBrowserDestination]
+    private(set) var filesTabs: FilesTabSession
 
     init(
         selectedTab: Int = 0,
         filesNavigationPath: [FileBrowserDestination] = []
     ) {
         self.selectedTab = selectedTab
-        self.filesNavigationPath = filesNavigationPath
+        var session = FilesTabSession()
+        session.setActiveNavigationPath(filesNavigationPath)
+        filesTabs = session
     }
 
     mutating func select(_ tab: Int) {
@@ -17,7 +19,15 @@ struct AppTabNavigationState: Equatable {
     }
 
     mutating func setFilesNavigationPath(_ path: [FileBrowserDestination]) {
-        filesNavigationPath = path
+        filesTabs.setActiveNavigationPath(path)
+    }
+
+    var filesNavigationPath: [FileBrowserDestination] {
+        filesTabs.activeTab?.navigationPath ?? []
+    }
+
+    mutating func setFilesTabs(_ session: FilesTabSession) {
+        filesTabs = session
     }
 }
 

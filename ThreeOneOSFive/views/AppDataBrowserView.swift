@@ -12,10 +12,10 @@ struct AppDataBrowserView: View {
     @State private var errorMessage: String?
     @State private var hasLoaded = false
     @State private var workspaceURL: URL?
-    @Binding private var navigationPath: [FileBrowserDestination]
+    @Binding private var tabSession: FilesTabSession
 
-    init(navigationPath: Binding<[FileBrowserDestination]>) {
-        _navigationPath = navigationPath
+    init(tabSession: Binding<FilesTabSession>) {
+        _tabSession = tabSession
     }
 
     private var filteredApps: [InstalledApp] {
@@ -38,7 +38,7 @@ struct AppDataBrowserView: View {
     }
 
     var body: some View {
-        NavigationStack(path: $navigationPath) {
+        NavigationStack(path: activeNavigationPath) {
             appList
             .navigationTitle(language.text("browser.title"))
             .navigationBarTitleDisplayMode(.inline)
@@ -75,18 +75,27 @@ struct AppDataBrowserView: View {
                     FileBrowserView(
                         containerPath: destination.containerPath,
                         title: destination.title,
-                        bundleID: destination.bundleID
+                        bundleID: destination.bundleID,
+                        filesTabSession: $tabSession
                     )
                 } else {
                     FileBrowserView(
                         containerPath: destination.containerPath,
                         startPath: destination.startPath,
                         title: destination.title,
-                        bundleID: destination.bundleID
+                        bundleID: destination.bundleID,
+                        filesTabSession: $tabSession
                     )
                 }
             }
         }
+    }
+
+    private var activeNavigationPath: Binding<[FileBrowserDestination]> {
+        Binding(
+            get: { tabSession.activeTab?.navigationPath ?? [] },
+            set: { tabSession.setActiveNavigationPath($0) }
+        )
     }
 
     private var appList: some View {
