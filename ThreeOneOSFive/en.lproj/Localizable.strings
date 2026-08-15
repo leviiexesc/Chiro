@@ -408,7 +408,7 @@
 "wallpaper.import" = "Import .tendies";
 "wallpaper.package_summary" = "%lld descriptors · %@";
 "wallpaper.packages_footer" = "Select one package to install. Swipe left to remove a package from local staging.";
-"wallpaper.after_apply_guide" = "After applying, open the app switcher and swipe up to close PosterBoard. Reopen PosterBoard, then check the Lock Screen wallpaper picker.";
+"wallpaper.after_apply_guide" = "After applying, open the app switcher and swipe up to close PosterBoard. The wallpaper will then work. Note: on iOS 27, get the Collections wallpaper first.";
 "wallpaper.recovery" = "Recovery";
 "wallpaper.no_recovery" = "No recoverable installations yet.";
 "wallpaper.recovery_summary" = "%lld installed descriptors";
