@@ -44,10 +44,10 @@
 | Hệ thống | Phiên bản/build |
 | --- | --- |
 | iOS 26 | 26.0 đến 26.6.1 |
-| iOS 27 beta 1 | `24A5355q` |
-| iOS 27 beta 2 | `24A5370h` |
-| iOS 27 beta 3 | `24A5380h` |
-| iOS 27 beta 4 | `24A5390f` |
+| iOS 27 Developer Beta 1 | `24A5355q` |
+| iOS 27 Developer Beta 2 | `24A5370h` |
+| iOS 27 Developer Beta 3 / Public Beta 1 | `24A5380h` |
+| iOS 27 Developer Beta 4 / Public Beta 2 | `24A5390f` |
 
 Những build không có trong bảng sẽ được đánh dấu là không hỗ trợ.
 

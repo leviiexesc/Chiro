@@ -53,13 +53,7 @@ struct SettingsView: View {
                         Text("iOS 27.0")
                             .font(.body)
                         ForEach(ExploitSupportPolicy.verifiedIOS27Builds, id: \.build) { version in
-                            Text(
-                                language.text(
-                                    "settings.beta_build",
-                                    Int64(version.beta),
-                                    version.build
-                                )
-                            )
+                            Text(versionLabel(version))
                             .font(.caption.monospaced())
                             .foregroundStyle(.secondary)
                         }
@@ -115,6 +109,24 @@ struct SettingsView: View {
         Bundle.main.object(forInfoDictionaryKey: "AppReleaseDisplayVersion") as? String
             ?? Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
             ?? "1.0"
+    }
+
+    private func versionLabel(
+        _ version: (beta: Int, publicBeta: Int?, build: String)
+    ) -> String {
+        if let publicBeta = version.publicBeta {
+            return language.text(
+                "settings.developer_public_beta_build",
+                Int64(version.beta),
+                Int64(publicBeta),
+                version.build
+            )
+        }
+        return language.text(
+            "settings.developer_beta_build",
+            Int64(version.beta),
+            version.build
+        )
     }
 
     @ViewBuilder

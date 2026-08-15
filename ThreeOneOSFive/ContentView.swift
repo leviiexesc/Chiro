@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.appLanguage) private var language
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject private var patchDraftCoordinator: PatchDraftCoordinator
     @State private var selectedTab: Int
 
@@ -25,36 +26,12 @@ struct ContentView: View {
     }
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            DashboardView()
-                .tabItem {
-                    Label(language.text("tab.home"), systemImage: "house")
-                }
-                .tag(0)
-
-            AppDataBrowserView()
-                .tabItem {
-                    Label(language.text("tab.files"), systemImage: "folder")
-                }
-                .tag(1)
-
-            PatchProjectsView()
-                .tabItem {
-                    Label(language.text("tab.patches"), systemImage: "shippingbox")
-                }
-                .tag(2)
-
-            CleanerView()
-                .tabItem {
-                    Label(language.text("tab.cleaner"), systemImage: "sparkles")
-                }
-                .tag(3)
-
-            WallpaperLabView()
-                .tabItem {
-                    Label(language.text("tab.wallpapers"), systemImage: "photo.on.rectangle.angled")
-                }
-                .tag(4)
+        Group {
+            if horizontalSizeClass == .regular {
+                regularLayout
+            } else {
+                compactLayout
+            }
         }
         .tint(AppTheme.accent)
         .onChange(of: patchDraftCoordinator.request?.id) { requestID in
@@ -62,6 +39,96 @@ struct ContentView: View {
         }
         .onChange(of: patchDraftCoordinator.importRequest?.id) { requestID in
             if requestID != nil { selectedTab = 2 }
+        }
+    }
+
+    private var compactLayout: some View {
+        TabView(selection: $selectedTab) {
+            ForEach(AppSection.allCases) { section in
+                sectionContent(section)
+                    .tabItem {
+                        Label(language.text(section.titleKey), systemImage: section.systemImage)
+                    }
+                    .tag(section.rawValue)
+            }
+        }
+    }
+
+    private var regularLayout: some View {
+        NavigationSplitView {
+            List {
+                ForEach(AppSection.allCases) { section in
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.18)) {
+                            selectedTab = section.rawValue
+                        }
+                    } label: {
+                        Label(language.text(section.titleKey), systemImage: section.systemImage)
+                            .fontWeight(section.rawValue == selectedTab ? .semibold : .regular)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .listRowBackground(
+                        section.rawValue == selectedTab
+                            ? AppTheme.accent.opacity(0.14)
+                            : Color.clear
+                    )
+                    .accessibilityAddTraits(section.rawValue == selectedTab ? .isSelected : [])
+                }
+            }
+            .navigationTitle("3105")
+            .navigationSplitViewColumnWidth(min: 210, ideal: 240, max: 300)
+        } detail: {
+            sectionContent(AppSection(rawValue: selectedTab) ?? .home)
+                .id(selectedTab)
+        }
+        .navigationSplitViewStyle(.balanced)
+    }
+
+    @ViewBuilder
+    private func sectionContent(_ section: AppSection) -> some View {
+        switch section {
+        case .home:
+            DashboardView()
+        case .files:
+            AppDataBrowserView()
+        case .patches:
+            PatchProjectsView()
+        case .cleaner:
+            CleanerView()
+        case .wallpapers:
+            WallpaperLabView()
+        }
+    }
+}
+
+private enum AppSection: Int, CaseIterable, Identifiable {
+    case home
+    case files
+    case patches
+    case cleaner
+    case wallpapers
+
+    var id: Int { rawValue }
+
+    var titleKey: String {
+        switch self {
+        case .home: return "tab.home"
+        case .files: return "tab.files"
+        case .patches: return "tab.patches"
+        case .cleaner: return "tab.cleaner"
+        case .wallpapers: return "tab.wallpapers"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .home: return "house"
+        case .files: return "folder"
+        case .patches: return "shippingbox"
+        case .cleaner: return "sparkles"
+        case .wallpapers: return "photo.on.rectangle.angled"
         }
     }
 }

@@ -51,12 +51,12 @@
 | System | Verified range/builds |
 | --- | --- |
 | iOS 26 | 26.0 through 26.6.1 |
-| iOS 27 beta 1 | `24A5355q` |
-| iOS 27 beta 2 | `24A5370h` |
-| iOS 27 beta 3 | `24A5380h` |
-| iOS 27 beta 4 | `24A5390f` |
+| iOS 27 Developer Beta 1 | `24A5355q` |
+| iOS 27 Developer Beta 2 | `24A5370h` |
+| iOS 27 Developer Beta 3 / Public Beta 1 | `24A5380h` |
+| iOS 27 Developer Beta 4 / Public Beta 2 | `24A5390f` |
 
-Unlisted builds, including iOS 27 beta 5 and newer, are marked unsupported rather than assumed compatible.
+Unlisted iOS 27 builds are marked unsupported rather than assumed compatible.
 
 ## Installation notes
 
