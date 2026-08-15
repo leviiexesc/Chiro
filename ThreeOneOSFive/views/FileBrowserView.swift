@@ -6,6 +6,7 @@ import QuickLook
 struct FileBrowserView: View {
     @Environment(\.appLanguage) private var language
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject private var patchDraftCoordinator: PatchDraftCoordinator
     @EnvironmentObject private var fileOperationCoordinator: FileOperationCoordinator
     let containerPath: String
@@ -120,6 +121,11 @@ struct FileBrowserView: View {
             prompt: language.text("browser.search_files")
         )
         .toolbar {
+            if let filesTabSession {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    FilesTabToolbarButton(session: filesTabSession)
+                }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(isSelecting
                        ? language.text("common.cancel")
@@ -197,6 +203,11 @@ struct FileBrowserView: View {
                     onCancel: fileOperationCoordinator.clear
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if horizontalSizeClass == .regular, let filesTabSession {
+                FilesTabStrip(session: filesTabSession)
             }
         }
         .animation(interfaceAnimation, value: isSelecting)

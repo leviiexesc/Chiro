@@ -375,6 +375,16 @@
 "browser.error_unsafe_archive" = "Tệp ZIP bị lỗi hoặc chứa đường dẫn không an toàn.";
 "browser.error_insufficient_space" = "Không đủ dung lượng trống để giải nén tệp ZIP này.";
 "browser.preview_error" = "Không thể xem trước tệp này.";
+"browser.tabs" = "Các thẻ Tệp";
+"browser.new_tab" = "Thẻ mới";
+"browser.tabs_root" = "Ứng dụng";
+"browser.tabs_root_detail" = "Danh sách dữ liệu ứng dụng";
+"browser.rename_tab" = "Đổi tên thẻ";
+"browser.close_tab" = "Đóng thẻ";
+"browser.close_other_tabs" = "Đóng các thẻ khác";
+"browser.tab_name" = "Tên thẻ";
+"browser.tab_name_message" = "Nhập tên cho thẻ này.";
+"browser.open_new_tab" = "Mở trong thẻ mới";
 
 "tab.wallpapers" = "Hình nền";
 "wallpaper.title" = "Wallpaper Lab";

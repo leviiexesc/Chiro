@@ -5,6 +5,7 @@ struct AppDataBrowserView: View {
     @Environment(\.appLanguage) private var language
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var apps: [InstalledApp] = []
     @State private var isLoading = false
     @State private var isResolving = false
@@ -48,6 +49,9 @@ struct AppDataBrowserView: View {
                 prompt: language.text("browser.search")
             )
             .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    FilesTabToolbarButton(session: $tabSession)
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button { reload() } label: {
                         if isResolving {
@@ -162,6 +166,11 @@ struct AppDataBrowserView: View {
         .listStyle(.plain)
         .environment(\.defaultMinListRowHeight, 48)
         .scrollDismissesKeyboard(.interactively)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if horizontalSizeClass == .regular {
+                FilesTabStrip(session: $tabSession)
+            }
+        }
         .overlay {
             Group {
                 switch overlayState {

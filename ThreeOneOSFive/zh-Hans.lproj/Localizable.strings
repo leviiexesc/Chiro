@@ -375,6 +375,16 @@
 "browser.error_unsafe_archive" = "ZIP 压缩包格式错误或包含不安全路径。";
 "browser.error_insufficient_space" = "可用空间不足，无法解压此 ZIP 压缩包。";
 "browser.preview_error" = "无法预览此文件。";
+"browser.tabs" = "文件标签页";
+"browser.new_tab" = "新建标签页";
+"browser.tabs_root" = "应用";
+"browser.tabs_root_detail" = "应用数据根目录";
+"browser.rename_tab" = "重命名标签页";
+"browser.close_tab" = "关闭标签页";
+"browser.close_other_tabs" = "关闭其他标签页";
+"browser.tab_name" = "标签页名称";
+"browser.tab_name_message" = "输入此标签页的名称。";
+"browser.open_new_tab" = "在新标签页中打开";
 
 "tab.wallpapers" = "壁纸";
 "wallpaper.title" = "壁纸实验室";

@@ -375,6 +375,16 @@
 "browser.error_unsafe_archive" = "The ZIP archive is malformed or contains an unsafe path.";
 "browser.error_insufficient_space" = "There is not enough free space to extract this ZIP archive.";
 "browser.preview_error" = "This file cannot be previewed.";
+"browser.tabs" = "File Tabs";
+"browser.new_tab" = "New Tab";
+"browser.tabs_root" = "Apps";
+"browser.tabs_root_detail" = "App data root";
+"browser.rename_tab" = "Rename Tab";
+"browser.close_tab" = "Close Tab";
+"browser.close_other_tabs" = "Close Other Tabs";
+"browser.tab_name" = "Tab Name";
+"browser.tab_name_message" = "Enter a name for this tab.";
+"browser.open_new_tab" = "Open in New Tab";
 
 "tab.wallpapers" = "Wallpapers";
 "wallpaper.title" = "Wallpaper Lab";
