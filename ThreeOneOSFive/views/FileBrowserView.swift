@@ -28,7 +28,6 @@ struct FileBrowserView: View {
     @State private var isShowingImportPicker = false
     @State private var importSession: FileImportSession?
     @State private var importConflict: FileImportConflict?
-    @State private var folderPatchEntry: FileEntry?
     @State private var isSelecting = false
     @State private var selectedEntryIDs = Set<String>()
     @State private var transferSession: FileTransferSession?
@@ -217,14 +216,6 @@ struct FileBrowserView: View {
             )
             .ignoresSafeArea()
         }
-        .sheet(item: $folderPatchEntry) { entry in
-            FolderPatchSelectionView(
-                containerRoot: URL(fileURLWithPath: containerPath, isDirectory: true),
-                folder: URL(fileURLWithPath: entry.path, isDirectory: true)
-            ) { candidates in
-                preparePatchDraft(candidates, suggestedName: entry.name)
-            }
-        }
         .overlay {
             ZStack {
                 if let activityText {
@@ -393,13 +384,22 @@ struct FileBrowserView: View {
             Label(language.text("browser.share"), systemImage: "square.and.arrow.up")
         }
         Divider()
-        Button {
-            requestPatchCreation(for: entry)
-        } label: {
-            Label(
-                language.text("browser.create_patch"),
-                systemImage: entry.isDirectory ? "folder.badge.plus" : "shippingbox"
-            )
+        if bundleID != nil {
+            Button {
+                requestPatchCreation(for: entry)
+            } label: {
+                Label(
+                    language.text("browser.create_patch"),
+                    systemImage: entry.isDirectory ? "folder.badge.plus" : "shippingbox"
+                )
+            }
+        }
+        if !entry.isDirectory, entry.name.lowercased().hasSuffix(".zip") {
+            Button {
+                extractArchive(entry)
+            } label: {
+                Label(language.text("browser.extract_zip"), systemImage: "archivebox")
+            }
         }
         Divider()
         if !entry.isDirectory {
@@ -1073,6 +1073,9 @@ struct FileBrowserView: View {
         case .cannotCopy: key = "browser.error_copy"
         case .cannotMove: key = "browser.error_move"
         case .cannotArchive: key = "browser.error_archive"
+        case .cannotExtract: key = "browser.error_extract"
+        case .unsafeArchive: key = "browser.error_unsafe_archive"
+        case .insufficientSpace: key = "browser.error_insufficient_space"
         }
         return language.text(key)
     }
@@ -1109,49 +1112,25 @@ struct FileBrowserView: View {
     }
 
     private func requestPatchCreation(for entry: FileEntry) {
-        guard bundleID != nil else {
+        guard let bundleID else {
             operationNotice = FileReplacementNotice(
                 title: language.text("patch.create_from_browser_failed"),
                 message: language.text("patch.error.invalid_bundle")
             )
             return
         }
-        if entry.isDirectory {
-            folderPatchEntry = entry
-            return
-        }
-        let fileURL = URL(fileURLWithPath: entry.path, isDirectory: false)
+        let itemURL = URL(fileURLWithPath: entry.path, isDirectory: entry.isDirectory)
         let containerURL = URL(fileURLWithPath: containerPath, isDirectory: true)
-        do {
-            let candidate = try PatchDraftService.candidate(
-                for: fileURL,
-                containerRoot: containerURL
-            )
-            let suggestedName = fileURL.deletingPathExtension().lastPathComponent
-            preparePatchDraft([candidate], suggestedName: suggestedName)
-        } catch let error as PatchPackageError {
-            presentPatchDraftError(error)
-        } catch {
-            presentPatchDraftError(.invalidProject)
-        }
-    }
-
-    private func preparePatchDraft(
-        _ candidates: [PatchDraftCandidate],
-        suggestedName: String
-    ) {
-        guard let bundleID else {
-            presentPatchDraftError(.invalidBundleIdentifier)
-            return
-        }
         activityText = language.text("patch.preparing_from_browser")
-        let containerURL = URL(fileURLWithPath: containerPath, isDirectory: true)
+        let suggestedName = entry.isDirectory
+            ? entry.name
+            : itemURL.deletingPathExtension().lastPathComponent
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let draft = try PatchDraftService.makeDraft(
                     bundleID: bundleID,
                     containerRoot: containerURL,
-                    candidates: candidates,
+                    itemURL: itemURL,
                     suggestedName: suggestedName
                 )
                 DispatchQueue.main.async {
@@ -1169,6 +1148,29 @@ struct FileBrowserView: View {
                     presentPatchDraftError(.invalidProject)
                 }
             }
+        }
+    }
+
+    private func extractArchive(_ entry: FileEntry) {
+        let archiveURL = URL(fileURLWithPath: entry.path, isDirectory: false)
+        let directoryURL = URL(fileURLWithPath: currentPath, isDirectory: true)
+        performFileOperation(
+            activity: language.text("browser.extracting"),
+            operationName: "extract ZIP",
+            successNotice: { path in
+                FileReplacementNotice(
+                    title: language.text("browser.extract_done_title"),
+                    message: language.text(
+                        "browser.extract_done_message",
+                        (path as NSString).lastPathComponent
+                    )
+                )
+            }
+        ) {
+            try FileManagerService.extractZIPArchive(
+                archiveURL,
+                into: directoryURL
+            ).destinationURL.path
         }
     }
 

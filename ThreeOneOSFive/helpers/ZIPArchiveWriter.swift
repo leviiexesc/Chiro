@@ -139,7 +139,12 @@ enum ZIPArchiveWriter {
                 if values.isDirectory != true && values.isRegularFile != true {
                     throw ZIPArchiveWriterError.invalidSource
                 }
-                let relativePath = child.path.dropFirst(sourceURL.path.count + 1)
+                let relativePath = child.pathComponents
+                    .suffix(enumerator.level)
+                    .joined(separator: "/")
+                guard !relativePath.isEmpty else {
+                    throw ZIPArchiveWriterError.invalidSource
+                }
                 var archivePath = archiveRootName + "/" + relativePath
                 if values.isDirectory == true { archivePath += "/" }
                 try append(

@@ -47,10 +47,17 @@ final class PatchProjectStore: ObservableObject {
         runOperation(successMessageKey: "patch.created_message") {
             let encoded = try PatchPackageCodec.encodeNew(project: project, password: password)
             let summary = try PatchPackageCodec.inspect(encoded.data)
-            if summary.isPasswordProtected {
-                try PatchKeyStore.store(encoded.contentKey, for: summary)
+            let workspace = try PatchWorkspaceService.createWorkspace(for: project)
+            do {
+                if summary.isPasswordProtected {
+                    try PatchKeyStore.store(encoded.contentKey, for: summary)
+                }
+                _ = try PatchProjectLibrary.save(data: encoded.data, projectName: project.name)
+            } catch {
+                try? FileManager.default.removeItem(at: workspace)
+                try? PatchKeyStore.delete(for: summary)
+                throw error
             }
-            _ = try PatchProjectLibrary.save(data: encoded.data, projectName: project.name)
         }
     }
 
@@ -179,11 +186,17 @@ final class PatchProjectStore: ObservableObject {
             do {
                 let decoded = try PatchPackageCodec.decode(pending.data, password: password)
                 try PatchKeyStore.store(decoded.contentKey, for: pending.summary)
-                _ = try PatchProjectLibrary.save(
-                    data: pending.data,
-                    projectName: decoded.project.name,
-                    existingURL: pending.existingURL
-                )
+                do {
+                    try PatchProjectLibrary.installImportedPackage(
+                        data: pending.data,
+                        decoded: decoded,
+                        summary: pending.summary,
+                        existingURL: pending.existingURL
+                    )
+                } catch {
+                    try? PatchKeyStore.delete(for: pending.summary)
+                    throw error
+                }
                 await self?.clearPendingUnlock()
                 await self?.finishOperation(successMessageKey: "patch.unlocked_message")
             } catch let error as PatchPackageError {
@@ -205,6 +218,34 @@ final class PatchProjectStore: ObservableObject {
             reload()
         } catch {
             present(.invalidProject)
+        }
+    }
+
+    func synchronizeWorkspace(projectID: UUID, reportsSuccess: Bool = false) {
+        guard let item = items.first(where: { $0.id == projectID }),
+              item.summary.schemaVersion >= 2,
+              !isBusy else { return }
+        isBusy = true
+        Task.detached(priority: .userInitiated) { [weak self] in
+            do {
+                _ = try PatchProjectLibrary.synchronizeWorkspace(item: item)
+                await self?.finishWorkspaceSynchronization(reportsSuccess: reportsSuccess)
+            } catch let error as PatchPackageError {
+                await self?.failOperation(error)
+            } catch {
+                await self?.failOperation(.invalidProject)
+            }
+        }
+    }
+
+    private func finishWorkspaceSynchronization(reportsSuccess: Bool) {
+        reload()
+        isBusy = false
+        if reportsSuccess {
+            alert = PatchStoreAlert(
+                titleKey: "common.done",
+                messageKey: "patch.workspace_synced_message"
+            )
         }
     }
 
@@ -243,9 +284,10 @@ final class PatchProjectStore: ObservableObject {
     ) throws -> PendingUnlock? {
         if let key = try PatchKeyStore.load(for: summary) {
             let decoded = try PatchPackageCodec.decode(data, contentKey: key)
-            _ = try PatchProjectLibrary.save(
+            try PatchProjectLibrary.installImportedPackage(
                 data: data,
-                projectName: decoded.project.name,
+                decoded: decoded,
+                summary: summary,
                 existingURL: existingURL
             )
             return nil
@@ -254,9 +296,10 @@ final class PatchProjectStore: ObservableObject {
             return PendingUnlock(data: data, summary: summary, existingURL: existingURL)
         }
         let decoded = try PatchPackageCodec.decode(data, password: nil)
-        _ = try PatchProjectLibrary.save(
+        try PatchProjectLibrary.installImportedPackage(
             data: data,
-            projectName: decoded.project.name,
+            decoded: decoded,
+            summary: summary,
             existingURL: existingURL
         )
         return nil

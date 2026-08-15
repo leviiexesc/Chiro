@@ -38,8 +38,7 @@ enum DevicePatchService {
     }
 
     private static func orderedBundleIdentifiers(in project: PatchProject) -> [String] {
-        var seen = Set<String>()
-        return project.rules.compactMap { seen.insert($0.bundleID).inserted ? $0.bundleID : nil }
+        project.allBundleIdentifiers
     }
 
     private static func withResolvedContainers<T>(

@@ -28,11 +28,29 @@ struct PatchRule: Codable, Identifiable, Hashable {
     }
 }
 
+struct PatchDirectory: Codable, Identifiable, Hashable {
+    var id: UUID
+    var bundleID: String
+    var relativePath: String
+
+    init(
+        id: UUID = UUID(),
+        bundleID: String,
+        relativePath: String
+    ) {
+        self.id = id
+        self.bundleID = bundleID
+        self.relativePath = relativePath
+    }
+}
+
 struct PatchProject: Codable, Identifiable, Hashable {
     var id: UUID
     var name: String
     var createdAt: Date
     var updatedAt: Date
+    var bundleIdentifiers: [String]
+    var directories: [PatchDirectory]
     var rules: [PatchRule]
 
     init(
@@ -40,19 +58,68 @@ struct PatchProject: Codable, Identifiable, Hashable {
         name: String,
         createdAt: Date = Date(),
         updatedAt: Date = Date(),
+        bundleIdentifiers: [String] = [],
+        directories: [PatchDirectory] = [],
         rules: [PatchRule]
     ) {
         self.id = id
         self.name = name
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+        self.bundleIdentifiers = bundleIdentifiers
+        self.directories = directories
         self.rules = rules
+    }
+
+    var allBundleIdentifiers: [String] {
+        var seen = Set<String>()
+        return (bundleIdentifiers + directories.map(\.bundleID) + rules.map(\.bundleID))
+            .filter { seen.insert($0).inserted }
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case createdAt
+        case updatedAt
+        case bundleIdentifiers
+        case directories
+        case rules
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+        bundleIdentifiers = try container.decodeIfPresent(
+            [String].self,
+            forKey: .bundleIdentifiers
+        ) ?? []
+        directories = try container.decodeIfPresent(
+            [PatchDirectory].self,
+            forKey: .directories
+        ) ?? []
+        rules = try container.decode([PatchRule].self, forKey: .rules)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(createdAt, forKey: .createdAt)
+        try container.encode(updatedAt, forKey: .updatedAt)
+        try container.encode(bundleIdentifiers, forKey: .bundleIdentifiers)
+        try container.encode(directories, forKey: .directories)
+        try container.encode(rules, forKey: .rules)
     }
 }
 
 struct PatchPackageSummary: Equatable, Identifiable {
     var id: UUID { packageID }
     let packageID: UUID
+    let schemaVersion: Int
     let isPasswordProtected: Bool
     let keyFingerprint: Data
 }

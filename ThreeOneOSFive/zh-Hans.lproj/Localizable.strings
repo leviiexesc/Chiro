@@ -79,8 +79,22 @@
 "patch.tap_to_unlock" = "轻点以输入密码";
 "patch.password_protected" = "受密码保护";
 "patch.rules_count" = "%lld 条替换规则";
+"patch.workspace_items_count" = "%lld 个工作区项目";
+"patch.search" = "搜索补丁";
+"patch.search_empty" = "没有匹配的补丁";
+"patch.search_empty_message" = "请尝试其他项目名称、Bundle 标识符、路径或文件名。";
 "patch.project" = "项目";
 "patch.project_name" = "项目名称";
+"patch.target_bundle" = "目标 Bundle";
+"patch.workspace_bundle_footer" = "3105 会在可编辑的补丁工作区中创建此 Bundle 文件夹，且不会保存容器 UUID。";
+"patch.captured_content" = "已获取内容";
+"patch.workspace_edit_footer" = "创建后，可在“文件”中的 3105 工作区管理完整的 Bundle 目录树。";
+"patch.workspace" = "工作区";
+"patch.open_workspace" = "打开补丁文件";
+"patch.workspace_detail_footer" = "可直接编辑此 Bundle 目录树。应用或导出时会自动同步到加密的 .3105 软件包。";
+"patch.legacy_footer" = "旧版 v1 补丁，当前版本的 3105 仍可完整使用。";
+"patch.files" = "文件";
+"patch.folders" = "文件夹";
 "patch.rules" = "规则";
 "patch.add_rule" = "添加规则";
 "patch.edit_rule" = "编辑规则";
@@ -125,16 +139,17 @@
 "patch.updated_message" = "补丁项目已更新，密码未更改。";
 "patch.imported_message" = ".3105 软件包已导入。";
 "patch.unlocked_message" = "已解锁。此设备不会再次询问该软件包的密码。";
+"patch.workspace_synced_message" = "补丁工作区已同步。";
 "patch.applied_message" = "所有补丁规则均已应用，原始文件已备份。";
 "patch.restored_message" = "原始文件已恢复。";
 "patch.error.unsupported_format" = "这不是有效的 .3105 补丁软件包。";
-"patch.error.unsupported_version" = "不支持此 .3105 软件包版本。";
+"patch.error.unsupported_version" = "此补丁需要更高版本的 3105。请更新应用后再导入。";
 "patch.error.password_or_corrupt" = "密码不正确，或软件包已被修改。";
 "patch.error.invalid_bundle" = "请输入有效的应用 bundle identifier，而不是容器 UUID。";
 "patch.error.unsafe_path" = "目标必须是应用数据容器内的安全相对路径。";
 "patch.error.size_limit" = "此软件包或替换文件超出支持的大小限制。";
 "patch.error.duplicate_target" = "两条规则指向同一个应用文件。";
-"patch.error.invalid_project" = "请输入项目名称，添加至少一条完整规则，并检查所有字段。";
+"patch.error.invalid_project" = "请检查项目名称、目标 Bundle 和工作区内容。";
 "patch.error.replacement_required" = "保存前，请为每个目标路径选择替换文件。";
 "patch.error.keychain" = "无法安全保存或读取已记住的解锁密钥。";
 "patch.error.app_unavailable" = "未安装应用 bundle %@，或无法打开该应用。未更改任何补丁文件。";
@@ -249,6 +264,8 @@
 "logs.empty_message" = "本次会话中的漏洞利用和编辑器活动将显示在这里。";
 
 "browser.title" = "应用数据浏览器";
+"browser.workspace" = "3105 工作区";
+"browser.workspace_subtitle" = "可在“我的 iPhone”中访问补丁和文件";
 "browser.loading" = "正在加载…";
 "browser.empty" = "无法解析任何应用 bundle。轻点“重试”再次扫描。";
 "browser.retry" = "重试";
@@ -348,6 +365,13 @@
 "browser.error_copy" = "无法安全复制所选项目。";
 "browser.error_move" = "无法安全移动所选项目。";
 "browser.error_archive" = "无法创建 ZIP。某个文件可能不可用或超出 ZIP 格式限制。";
+"browser.extract_zip" = "解压缩";
+"browser.extracting" = "正在解压 ZIP…";
+"browser.extract_done_title" = "ZIP 已解压";
+"browser.extract_done_message" = "压缩包已解压到 %@。";
+"browser.error_extract" = "无法安全地解压此 ZIP 压缩包。";
+"browser.error_unsafe_archive" = "ZIP 压缩包格式错误或包含不安全路径。";
+"browser.error_insufficient_space" = "可用空间不足，无法解压此 ZIP 压缩包。";
 "browser.preview_error" = "无法预览此文件。";
 
 "tab.wallpapers" = "壁纸";

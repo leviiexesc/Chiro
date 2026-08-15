@@ -8,6 +8,9 @@ struct PatchLibraryItem: Identifiable {
 
     var id: UUID { summary.packageID }
     var isLocked: Bool { project == nil }
+    var workspaceURL: URL? {
+        PatchWorkspaceService.workspaceURL(projectID: id)
+    }
 }
 
 struct PatchPasswordRequest: Identifiable {
@@ -62,6 +65,13 @@ enum PatchProjectLibrary {
                     contentKey: decoded?.contentKey,
                     packageURL: url
                 )
+                if summary.schemaVersion >= 2, let project = decoded?.project {
+                    do {
+                        _ = try PatchWorkspaceService.ensureWorkspace(for: project)
+                    } catch {
+                        log("patch: workspace unavailable for \(project.id.uuidString)")
+                    }
+                }
                 byID[summary.packageID] = item
             } catch {
                 log("patch: skipped invalid local package \(url.lastPathComponent)")
@@ -106,11 +116,86 @@ enum PatchProjectLibrary {
         return destination
     }
 
+    static func installImportedPackage(
+        data: Data,
+        decoded: DecodedPatchPackage,
+        summary: PatchPackageSummary,
+        existingURL: URL?,
+        fileManager: FileManager = .default
+    ) throws {
+        let previousData = try existingURL.map { try readPackage(at: $0) }
+        var savedURL: URL?
+        do {
+            savedURL = try save(
+                data: data,
+                projectName: decoded.project.name,
+                existingURL: existingURL,
+                fileManager: fileManager
+            )
+            if summary.schemaVersion >= 2 {
+                _ = try PatchWorkspaceService.replaceWorkspace(
+                    with: decoded.project,
+                    fileManager: fileManager
+                )
+            } else {
+                try? PatchWorkspaceService.deleteWorkspace(
+                    projectID: decoded.project.id,
+                    fileManager: fileManager
+                )
+            }
+        } catch {
+            if let previousData, let existingURL {
+                try? previousData.write(
+                    to: existingURL,
+                    options: [.atomic, .completeFileProtection]
+                )
+            } else if let savedURL, fileManager.fileExists(atPath: savedURL.path) {
+                try? fileManager.removeItem(at: savedURL)
+            }
+            throw error
+        }
+    }
+
     static func delete(_ item: PatchLibraryItem, fileManager: FileManager = .default) throws {
         if fileManager.fileExists(atPath: item.packageURL.path) {
             try fileManager.removeItem(at: item.packageURL)
         }
+        try? PatchWorkspaceService.deleteWorkspace(projectID: item.id, fileManager: fileManager)
         try? PatchKeyStore.delete(for: item.summary)
+    }
+
+    static func synchronizeWorkspace(
+        item: PatchLibraryItem,
+        fileManager: FileManager = .default
+    ) throws -> PatchProject {
+        guard item.summary.schemaVersion >= 2,
+              let baseProject = item.project,
+              let contentKey = item.contentKey else {
+            throw PatchPackageError.invalidProject
+        }
+        let workspace = try PatchWorkspaceService.ensureWorkspace(
+            for: baseProject,
+            fileManager: fileManager
+        )
+        let project = try PatchWorkspaceService.snapshot(
+            baseProject: baseProject,
+            workspaceURL: workspace,
+            fileManager: fileManager
+        )
+        let original = try readPackage(at: item.packageURL)
+        let updated = try PatchPackageCodec.update(
+            original,
+            project: project,
+            contentKey: contentKey,
+            schemaVersion: PatchPackageCodec.latestSchemaVersion
+        )
+        _ = try save(
+            data: updated,
+            projectName: project.name,
+            existingURL: item.packageURL,
+            fileManager: fileManager
+        )
+        return project
     }
 
     private static func sanitizedFilename(_ rawName: String) -> String {

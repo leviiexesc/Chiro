@@ -5,9 +5,13 @@ struct PatchProjectEditorView: View {
     @Environment(\.dismiss) private var dismiss
     let existingProject: PatchProject?
     let passwordIsProtected: Bool
+    let initialDraft: PatchProjectDraft?
     let onSave: (PatchProject, String?) -> Void
 
     @State private var name: String
+    @State private var bundleID: String
+    @State private var bundleIdentifiers: [String]
+    @State private var directories: [PatchDirectory]
     @State private var rules: [PatchRule]
     @State private var password = ""
     @State private var ruleEditor: PatchRuleEditorContext?
@@ -21,8 +25,18 @@ struct PatchProjectEditorView: View {
     ) {
         self.existingProject = existingProject
         self.passwordIsProtected = passwordIsProtected
+        self.initialDraft = initialDraft
         self.onSave = onSave
         _name = State(initialValue: existingProject?.name ?? initialDraft?.name ?? "")
+        _bundleID = State(initialValue: initialDraft?.bundleIdentifiers.first ?? "")
+        _bundleIdentifiers = State(
+            initialValue: existingProject?.bundleIdentifiers
+                ?? initialDraft?.bundleIdentifiers
+                ?? []
+        )
+        _directories = State(
+            initialValue: existingProject?.directories ?? initialDraft?.directories ?? []
+        )
         _rules = State(initialValue: existingProject?.rules ?? initialDraft?.rules ?? [])
     }
 
@@ -34,7 +48,29 @@ struct PatchProjectEditorView: View {
                         .textInputAutocapitalization(.words)
                 }
 
-                Section {
+                if existingProject == nil {
+                    Section {
+                        if let capturedBundle = initialDraft?.bundleIdentifiers.first {
+                            LabeledContent(language.text("patch.target_bundle")) {
+                                Text(capturedBundle)
+                                    .font(.caption.monospaced())
+                                    .foregroundStyle(.secondary)
+                            }
+                        } else {
+                            TextField("com.example.app", text: $bundleID)
+                                .textInputAutocapitalization(.never)
+                                .autocorrectionDisabled()
+                                .font(.body.monospaced())
+                        }
+                    } header: {
+                        Text(language.text("patch.target_bundle"))
+                    } footer: {
+                        Text(language.text("patch.workspace_bundle_footer"))
+                    }
+                }
+
+                if existingProject != nil || !rules.isEmpty || !directories.isEmpty {
+                    Section {
                     ForEach(rules) { rule in
                         Button {
                             ruleEditor = PatchRuleEditorContext(rule: rule)
@@ -53,15 +89,24 @@ struct PatchProjectEditorView: View {
                     }
                     .onDelete { rules.remove(atOffsets: $0) }
 
-                    Button {
-                        ruleEditor = PatchRuleEditorContext(rule: nil)
-                    } label: {
-                        Label(language.text("patch.add_rule"), systemImage: "plus.circle.fill")
+                        if existingProject != nil {
+                            Button {
+                                ruleEditor = PatchRuleEditorContext(rule: nil)
+                            } label: {
+                                Label(language.text("patch.add_rule"), systemImage: "plus.circle.fill")
+                            }
+                        }
+                        if !directories.isEmpty {
+                            LabeledContent(language.text("patch.folders")) {
+                                Text("\(directories.count)")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    } header: {
+                        Text(language.text("patch.captured_content"))
+                    } footer: {
+                        Text(language.text("patch.workspace_edit_footer"))
                     }
-                } header: {
-                    Text(language.text("patch.rules"))
-                } footer: {
-                    Text(language.text("patch.bundle_path_footer"))
                 }
 
                 Section {
@@ -135,7 +180,27 @@ struct PatchProjectEditorView: View {
 
     private func save() {
         let projectName = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !projectName.isEmpty, projectName.utf8.count <= 120, !rules.isEmpty else {
+        guard !projectName.isEmpty, projectName.utf8.count <= 120 else {
+            validationMessageKey = "patch.error.invalid_project"
+            return
+        }
+        if existingProject == nil, initialDraft == nil {
+            do {
+                let canonical = try PatchPathValidator.canonicalBundleIdentifier(bundleID)
+                guard canonical == bundleID.trimmingCharacters(in: .whitespacesAndNewlines) else {
+                    throw PatchPackageError.invalidBundleIdentifier
+                }
+                bundleID = canonical
+                bundleIdentifiers = [canonical]
+            } catch let error as PatchPackageError {
+                validationMessageKey = error.localizationKey
+                return
+            } catch {
+                validationMessageKey = "patch.error.invalid_bundle"
+                return
+            }
+        }
+        guard !bundleIdentifiers.isEmpty || !rules.isEmpty || !directories.isEmpty else {
             validationMessageKey = "patch.error.invalid_project"
             return
         }
@@ -153,6 +218,8 @@ struct PatchProjectEditorView: View {
             name: projectName,
             createdAt: existingProject?.createdAt ?? Date(),
             updatedAt: Date(),
+            bundleIdentifiers: bundleIdentifiers,
+            directories: directories,
             rules: rules
         )
         do {

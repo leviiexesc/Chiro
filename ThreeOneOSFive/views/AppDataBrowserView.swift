@@ -11,6 +11,7 @@ struct AppDataBrowserView: View {
     @State private var searchText = ""
     @State private var errorMessage: String?
     @State private var hasLoaded = false
+    @State private var workspaceURL: URL?
 
     private var filteredApps: [InstalledApp] {
         guard !searchText.isEmpty else { return apps }
@@ -55,6 +56,10 @@ struct AppDataBrowserView: View {
                 }
             }
             .onAppear {
+                if workspaceURL == nil {
+                    workspaceURL = try? PatchWorkspaceService.documentsRootURL()
+                    _ = try? PatchWorkspaceService.patchesRootURL()
+                }
                 if !hasLoaded {
                     hasLoaded = true
                     reload()
@@ -65,6 +70,32 @@ struct AppDataBrowserView: View {
 
     private var appList: some View {
         List {
+            if let workspaceURL {
+                Section(language.text("browser.workspace")) {
+                    NavigationLink {
+                        FileBrowserView(
+                            containerPath: workspaceURL.path,
+                            title: "3105",
+                            bundleID: nil
+                        )
+                    } label: {
+                        HStack(spacing: 10) {
+                            Image(systemName: "folder.fill")
+                                .font(.title3)
+                                .foregroundStyle(AppTheme.accent)
+                                .frame(width: 36, height: 36)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("3105")
+                                    .font(.subheadline.weight(.semibold))
+                                Text(language.text("browser.workspace_subtitle"))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+            }
             Section {
                 ForEach(filteredApps) { app in
                     if app.containerPath.isEmpty {

@@ -20,6 +20,9 @@ enum FileManagerOperationError: Error, Equatable, LocalizedError {
     case cannotCopy
     case cannotMove
     case cannotArchive
+    case cannotExtract
+    case unsafeArchive
+    case insufficientSpace
 
     var errorDescription: String? {
         switch self {
@@ -41,6 +44,9 @@ enum FileManagerOperationError: Error, Equatable, LocalizedError {
         case .cannotCopy: return "The selected items could not be copied."
         case .cannotMove: return "The selected items could not be moved."
         case .cannotArchive: return "The ZIP archive could not be created."
+        case .cannotExtract: return "The ZIP archive could not be extracted."
+        case .unsafeArchive: return "The ZIP archive contains unsafe or unsupported entries."
+        case .insufficientSpace: return "There is not enough free space to extract this archive."
         }
     }
 }
@@ -129,7 +135,6 @@ struct FileImportSession: Equatable {
 }
 
 enum FileManagerService {
-    static let maximumImportByteCount = FileReplacementService.maximumByteCount
     private static let maximumNameByteCount = 255
     private static let copyChunkSize = 1_024 * 1_024
 
@@ -415,11 +420,6 @@ enum FileManagerService {
         guard sourceValues.isDirectory != true else {
             throw FileManagerOperationError.sourceIsDirectory
         }
-        if let sourceSize = sourceValues.fileSize,
-           Int64(sourceSize) > maximumImportByteCount {
-            throw FileManagerOperationError.sourceTooLarge
-        }
-
         let destinationURL = try destinationURL(
             named: sourceURL.lastPathComponent,
             in: directoryURL,
@@ -494,6 +494,33 @@ enum FileManagerService {
             byteCount: copiedByteCount,
             disposition: .imported
         )
+    }
+
+    static func extractZIPArchive(
+        _ archiveURL: URL,
+        into directoryURL: URL,
+        fileManager: FileManager = .default
+    ) throws -> ZIPArchiveExtractionResult {
+        do {
+            return try ZIPArchiveExtractor.extract(
+                archiveURL: archiveURL,
+                into: directoryURL,
+                fileManager: fileManager
+            )
+        } catch let error as ZIPArchiveExtractorError {
+            switch error {
+            case .symbolicLinkUnsupported:
+                throw FileManagerOperationError.symbolicLinkUnsupported
+            case .invalidArchive:
+                throw FileManagerOperationError.unsafeArchive
+            case .insufficientSpace:
+                throw FileManagerOperationError.insufficientSpace
+            case .extractionFailed:
+                throw FileManagerOperationError.cannotExtract
+            }
+        } catch {
+            throw FileManagerOperationError.cannotExtract
+        }
     }
 
     private static func validateDirectory(
@@ -698,10 +725,11 @@ enum FileManagerService {
             }
             var copiedByteCount: Int64 = 0
             while let data = try source.read(upToCount: copyChunkSize), !data.isEmpty {
-                copiedByteCount += Int64(data.count)
-                guard copiedByteCount <= maximumImportByteCount else {
+                let (nextCount, overflow) = copiedByteCount.addingReportingOverflow(Int64(data.count))
+                guard !overflow else {
                     throw FileManagerOperationError.sourceTooLarge
                 }
+                copiedByteCount = nextCount
                 try staging.write(contentsOf: data)
             }
             try staging.synchronize()

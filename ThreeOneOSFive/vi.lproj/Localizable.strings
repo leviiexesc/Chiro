@@ -79,8 +79,22 @@
 "patch.tap_to_unlock" = "Chạm để nhập mật khẩu";
 "patch.password_protected" = "Có mật khẩu bảo vệ";
 "patch.rules_count" = "%lld quy tắc thay thế";
+"patch.workspace_items_count" = "%lld mục trong workspace";
+"patch.search" = "Tìm kiếm patch";
+"patch.search_empty" = "Không tìm thấy patch";
+"patch.search_empty_message" = "Thử tên dự án, bundle, đường dẫn hoặc tên tệp khác.";
 "patch.project" = "Dự án";
 "patch.project_name" = "Tên dự án";
+"patch.target_bundle" = "Bundle đích";
+"patch.workspace_bundle_footer" = "3105 tạo folder bundle này trong workspace có thể chỉnh sửa. UUID container không bao giờ được lưu.";
+"patch.captured_content" = "Nội dung đã lấy";
+"patch.workspace_edit_footer" = "Sau khi tạo, hãy quản lý toàn bộ cây bundle trong workspace 3105 ở mục Tệp.";
+"patch.workspace" = "Workspace";
+"patch.open_workspace" = "Mở tệp patch";
+"patch.workspace_detail_footer" = "Chỉnh sửa trực tiếp cây bundle này. Áp dụng và Xuất sẽ tự đồng bộ vào gói .3105 đã mã hóa.";
+"patch.legacy_footer" = "Patch v1 cũ. Phiên bản 3105 này vẫn sử dụng đầy đủ được.";
+"patch.files" = "Tệp";
+"patch.folders" = "Thư mục";
 "patch.rules" = "Quy tắc";
 "patch.add_rule" = "Thêm quy tắc";
 "patch.edit_rule" = "Sửa quy tắc";
@@ -125,16 +139,17 @@
 "patch.updated_message" = "Đã cập nhật dự án mà không thay đổi mật khẩu.";
 "patch.imported_message" = "Đã nhập gói .3105.";
 "patch.unlocked_message" = "Đã mở khóa. Thiết bị này sẽ không hỏi lại mật khẩu của gói này.";
+"patch.workspace_synced_message" = "Đã đồng bộ workspace của patch.";
 "patch.applied_message" = "Đã áp dụng mọi quy tắc và sao lưu các file gốc.";
 "patch.restored_message" = "Đã khôi phục các file gốc.";
 "patch.error.unsupported_format" = "Đây không phải là gói patch .3105 hợp lệ.";
-"patch.error.unsupported_version" = "Phiên bản gói .3105 này chưa được hỗ trợ.";
+"patch.error.unsupported_version" = "Patch này yêu cầu phiên bản 3105 mới hơn. Hãy cập nhật ứng dụng trước khi nhập.";
 "patch.error.password_or_corrupt" = "Mật khẩu sai hoặc gói đã bị chỉnh sửa.";
 "patch.error.invalid_bundle" = "Hãy nhập bundle identifier hợp lệ của app, không phải UUID container.";
 "patch.error.unsafe_path" = "Đích phải là đường dẫn tương đối an toàn bên trong data container của app.";
 "patch.error.size_limit" = "Gói hoặc file thay thế vượt quá giới hạn kích thước hỗ trợ.";
 "patch.error.duplicate_target" = "Có hai quy tắc cùng trỏ tới một file của app.";
-"patch.error.invalid_project" = "Hãy nhập tên dự án, thêm ít nhất một quy tắc đầy đủ và kiểm tra lại các trường.";
+"patch.error.invalid_project" = "Hãy kiểm tra tên dự án, bundle đích và nội dung workspace.";
 "patch.error.replacement_required" = "Hãy chọn tệp thay thế cho mọi đường dẫn đích trước khi lưu.";
 "patch.error.keychain" = "Không thể lưu hoặc đọc khóa mở gói một cách an toàn.";
 "patch.error.app_unavailable" = "Bundle app %@ chưa được cài hoặc không thể mở. Patch chưa thay đổi file nào.";
@@ -249,6 +264,8 @@
 "logs.empty_message" = "Hoạt động exploit và chỉnh sửa sẽ xuất hiện tại đây trong phiên này.";
 
 "browser.title" = "Duyệt dữ liệu ứng dụng";
+"browser.workspace" = "Workspace 3105";
+"browser.workspace_subtitle" = "Patch và tệp có trong Trên iPhone của tôi";
 "browser.loading" = "Đang tải…";
 "browser.empty" = "Chưa phân giải được bundle ứng dụng. Nhấn Thử lại để quét lại.";
 "browser.retry" = "Thử lại";
@@ -348,6 +365,13 @@
 "browser.error_copy" = "Không thể sao chép an toàn các mục đã chọn.";
 "browser.error_move" = "Không thể di chuyển an toàn các mục đã chọn.";
 "browser.error_archive" = "Không thể tạo tệp ZIP. Có thể một tệp không còn truy cập được hoặc vượt giới hạn định dạng ZIP.";
+"browser.extract_zip" = "Giải nén";
+"browser.extracting" = "Đang giải nén ZIP…";
+"browser.extract_done_title" = "Đã giải nén ZIP";
+"browser.extract_done_message" = "Tệp nén đã được giải nén vào %@.";
+"browser.error_extract" = "Không thể giải nén tệp ZIP một cách an toàn.";
+"browser.error_unsafe_archive" = "Tệp ZIP bị lỗi hoặc chứa đường dẫn không an toàn.";
+"browser.error_insufficient_space" = "Không đủ dung lượng trống để giải nén tệp ZIP này.";
 "browser.preview_error" = "Không thể xem trước tệp này.";
 
 "tab.wallpapers" = "Hình nền";
