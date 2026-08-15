@@ -175,8 +175,8 @@ private struct DashboardView: View {
         NavigationStack {
             List {
                 deviceSection
-                signingSection
                 featuresSection
+                signingSection
             }
             .navigationBarTitleDisplayMode(.inline)
             .tint(AppTheme.accent)
