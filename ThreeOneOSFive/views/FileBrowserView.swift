@@ -391,6 +391,14 @@ struct FileBrowserView: View {
 
     @ViewBuilder
     private func fileActions(for entry: FileEntry) -> some View {
+        if entry.isDirectory, filesTabSession != nil {
+            Button {
+                openDirectoryInNewTab(entry)
+            } label: {
+                Label(language.text("browser.open_new_tab"), systemImage: "square.on.square")
+            }
+            Divider()
+        }
         Button {
             selectedEntryIDs = [entry.id]
             isSelecting = true
@@ -450,6 +458,22 @@ struct FileBrowserView: View {
         } label: {
             Label(language.text("browser.delete"), systemImage: "trash")
         }
+    }
+
+    private func openDirectoryInNewTab(_ entry: FileEntry) {
+        guard let filesTabSession else { return }
+        var updatedSession = filesTabSession.wrappedValue
+        updatedSession.openTab(
+            navigationPath: [
+                FileBrowserDestination(
+                    containerPath: containerPath,
+                    startPath: entry.path,
+                    title: entry.name,
+                    bundleID: bundleID
+                )
+            ]
+        )
+        filesTabSession.wrappedValue = updatedSession
     }
 
     private var fileEmptyView: some View {

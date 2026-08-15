@@ -106,14 +106,13 @@ struct AppDataBrowserView: View {
         List {
             if let workspaceURL {
                 Section(language.text("browser.workspace")) {
-                    NavigationLink(
-                        value: FileBrowserDestination(
-                            containerPath: workspaceURL.path,
-                            startPath: workspaceURL.path,
-                            title: "3105",
-                            bundleID: nil
-                        )
-                    ) {
+                    let workspaceDestination = FileBrowserDestination(
+                        containerPath: workspaceURL.path,
+                        startPath: workspaceURL.path,
+                        title: "3105",
+                        bundleID: nil
+                    )
+                    NavigationLink(value: workspaceDestination) {
                         HStack(spacing: 10) {
                             Image(systemName: "folder.fill")
                                 .font(.title3)
@@ -129,6 +128,9 @@ struct AppDataBrowserView: View {
                         }
                         .padding(.vertical, 2)
                     }
+                    .contextMenu {
+                        openInNewTabButton(workspaceDestination)
+                    }
                 }
             }
             Section {
@@ -136,15 +138,17 @@ struct AppDataBrowserView: View {
                     if app.containerPath.isEmpty {
                         appRow(app)
                     } else {
-                        NavigationLink(
-                            value: FileBrowserDestination(
-                                containerPath: app.containerPath,
-                                startPath: app.containerPath,
-                                title: app.displayName,
-                                bundleID: app.bundleID
-                            )
-                        ) {
+                        let appDestination = FileBrowserDestination(
+                            containerPath: app.containerPath,
+                            startPath: app.containerPath,
+                            title: app.displayName,
+                            bundleID: app.bundleID
+                        )
+                        NavigationLink(value: appDestination) {
                             appRow(app)
+                        }
+                        .contextMenu {
+                            openInNewTabButton(appDestination)
                         }
                     }
                 }
@@ -215,6 +219,14 @@ struct AppDataBrowserView: View {
         }
         .padding(.vertical, 2)
         .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 12))
+    }
+
+    private func openInNewTabButton(_ destination: FileBrowserDestination) -> some View {
+        Button {
+            tabSession.openTab(navigationPath: [destination])
+        } label: {
+            Label(language.text("browser.open_new_tab"), systemImage: "square.on.square")
+        }
     }
 
     private var emptyView: some View {
