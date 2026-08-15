@@ -185,7 +185,8 @@ struct PatchProjectsView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
             Button(language.text("patch.new")) { showCreate = true }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
+                .controlSize(.large)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 64)
