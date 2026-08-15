@@ -408,6 +408,7 @@
 "wallpaper.import" = "导入 .tendies";
 "wallpaper.package_summary" = "%lld 个描述符 · %@";
 "wallpaper.packages_footer" = "选择一个软件包进行安装。向左轻扫可从本地暂存区删除。";
+"wallpaper.after_apply_guide" = "应用后，请打开锁定屏幕壁纸选择器。若未显示，请从应用切换器关闭 PosterBoard 后重新打开。";
 "wallpaper.recovery" = "恢复";
 "wallpaper.no_recovery" = "暂无可恢复的安装。";
 "wallpaper.recovery_summary" = "已安装 %lld 个描述符";

@@ -408,6 +408,7 @@
 "wallpaper.import" = "Import .tendies";
 "wallpaper.package_summary" = "%lld descriptors · %@";
 "wallpaper.packages_footer" = "Select one package to install. Swipe left to remove a package from local staging.";
+"wallpaper.after_apply_guide" = "After applying, open the Lock Screen wallpaper picker. If it does not appear, close PosterBoard from the app switcher and reopen it.";
 "wallpaper.recovery" = "Recovery";
 "wallpaper.no_recovery" = "No recoverable installations yet.";
 "wallpaper.recovery_summary" = "%lld installed descriptors";

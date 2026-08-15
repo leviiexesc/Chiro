@@ -141,7 +141,11 @@ struct WallpaperLabView: View {
                 }
                 installAction
             }
-        } header: { Text(language.text("wallpaper.packages")) }
+        } header: {
+            Text(language.text("wallpaper.packages"))
+        } footer: {
+            Text(language.text("wallpaper.after_apply_guide"))
+        }
     }
 
     private func packageRow(_ package: WallpaperStagedPackage) -> some View {
