@@ -4,13 +4,15 @@ struct ContentView: View {
     @Environment(\.appLanguage) private var language
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject private var patchDraftCoordinator: PatchDraftCoordinator
-    @State private var selectedTab: Int
+    @State private var tabNavigation: AppTabNavigationState
 
     init() {
 #if targetEnvironment(simulator)
         let arguments = ProcessInfo.processInfo.arguments
         let initialTab: Int
-        if arguments.contains("--simulate-patch-tab") {
+        if arguments.contains("--simulate-files-tab") {
+            initialTab = 1
+        } else if arguments.contains("--simulate-patch-tab") {
             initialTab = 2
         } else if arguments.contains("--simulate-cleaner-tab") {
             initialTab = 3
@@ -19,9 +21,9 @@ struct ContentView: View {
         } else {
             initialTab = 0
         }
-        _selectedTab = State(initialValue: initialTab)
+        _tabNavigation = State(initialValue: AppTabNavigationState(selectedTab: initialTab))
 #else
-        _selectedTab = State(initialValue: 0)
+        _tabNavigation = State(initialValue: AppTabNavigationState())
 #endif
     }
 
@@ -35,15 +37,15 @@ struct ContentView: View {
         }
         .tint(AppTheme.accent)
         .onChange(of: patchDraftCoordinator.request?.id) { requestID in
-            if requestID != nil { selectedTab = 2 }
+            if requestID != nil { tabNavigation.select(AppSection.patches.rawValue) }
         }
         .onChange(of: patchDraftCoordinator.importRequest?.id) { requestID in
-            if requestID != nil { selectedTab = 2 }
+            if requestID != nil { tabNavigation.select(AppSection.patches.rawValue) }
         }
     }
 
     private var compactLayout: some View {
-        TabView(selection: $selectedTab) {
+        TabView(selection: tabSelection) {
             ForEach(AppSection.allCases) { section in
                 sectionContent(section)
                     .tabItem {
@@ -60,28 +62,30 @@ struct ContentView: View {
                 ForEach(AppSection.allCases) { section in
                     Button {
                         withAnimation(.easeInOut(duration: 0.18)) {
-                            selectedTab = section.rawValue
+                            tabNavigation.select(section.rawValue)
                         }
                     } label: {
                         Label(language.text(section.titleKey), systemImage: section.systemImage)
-                            .fontWeight(section.rawValue == selectedTab ? .semibold : .regular)
+                            .fontWeight(section.rawValue == tabNavigation.selectedTab ? .semibold : .regular)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .listRowBackground(
-                        section.rawValue == selectedTab
+                        section.rawValue == tabNavigation.selectedTab
                             ? AppTheme.accent.opacity(0.14)
                             : Color.clear
                     )
-                    .accessibilityAddTraits(section.rawValue == selectedTab ? .isSelected : [])
+                    .accessibilityAddTraits(
+                        section.rawValue == tabNavigation.selectedTab ? .isSelected : []
+                    )
                 }
             }
             .navigationTitle("3105")
             .navigationSplitViewColumnWidth(min: 210, ideal: 240, max: 300)
         } detail: {
-            sectionContent(AppSection(rawValue: selectedTab) ?? .home)
-                .id(selectedTab)
+            sectionContent(AppSection(rawValue: tabNavigation.selectedTab) ?? .home)
+                .id(tabNavigation.selectedTab)
         }
         .navigationSplitViewStyle(.balanced)
     }
@@ -92,7 +96,9 @@ struct ContentView: View {
         case .home:
             DashboardView()
         case .files:
-            AppDataBrowserView()
+            AppDataBrowserView(
+                navigationResetRevision: tabNavigation.filesNavigationRevision
+            )
         case .patches:
             PatchProjectsView()
         case .cleaner:
@@ -100,6 +106,13 @@ struct ContentView: View {
         case .wallpapers:
             WallpaperLabView()
         }
+    }
+
+    private var tabSelection: Binding<Int> {
+        Binding(
+            get: { tabNavigation.selectedTab },
+            set: { tabNavigation.select($0) }
+        )
     }
 }
 

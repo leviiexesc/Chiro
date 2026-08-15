@@ -12,6 +12,13 @@ struct AppDataBrowserView: View {
     @State private var errorMessage: String?
     @State private var hasLoaded = false
     @State private var workspaceURL: URL?
+    @State private var navigationPath = NavigationPath()
+
+    let navigationResetRevision: Int
+
+    init(navigationResetRevision: Int = 0) {
+        self.navigationResetRevision = navigationResetRevision
+    }
 
     private var filteredApps: [InstalledApp] {
         guard !searchText.isEmpty else { return apps }
@@ -33,7 +40,7 @@ struct AppDataBrowserView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             appList
             .navigationTitle(language.text("browser.title"))
             .navigationBarTitleDisplayMode(.inline)
@@ -65,6 +72,16 @@ struct AppDataBrowserView: View {
                     reload()
                 }
             }
+            .navigationDestination(for: AppDataBrowserDestination.self) { destination in
+                FileBrowserView(
+                    containerPath: destination.containerPath,
+                    title: destination.title,
+                    bundleID: destination.bundleID
+                )
+            }
+            .onChange(of: navigationResetRevision) { _ in
+                navigationPath = NavigationPath()
+            }
         }
     }
 
@@ -72,13 +89,13 @@ struct AppDataBrowserView: View {
         List {
             if let workspaceURL {
                 Section(language.text("browser.workspace")) {
-                    NavigationLink {
-                        FileBrowserView(
+                    NavigationLink(
+                        value: AppDataBrowserDestination(
                             containerPath: workspaceURL.path,
                             title: "3105",
                             bundleID: nil
                         )
-                    } label: {
+                    ) {
                         HStack(spacing: 10) {
                             Image(systemName: "folder.fill")
                                 .font(.title3)
@@ -101,13 +118,13 @@ struct AppDataBrowserView: View {
                     if app.containerPath.isEmpty {
                         appRow(app)
                     } else {
-                        NavigationLink {
-                            FileBrowserView(
+                        NavigationLink(
+                            value: AppDataBrowserDestination(
                                 containerPath: app.containerPath,
                                 title: app.displayName,
                                 bundleID: app.bundleID
                             )
-                        } label: {
+                        ) {
                             appRow(app)
                         }
                     }
@@ -318,6 +335,12 @@ struct AppDataBrowserView: View {
             }
         }
     }
+}
+
+private struct AppDataBrowserDestination: Hashable {
+    let containerPath: String
+    let title: String
+    let bundleID: String?
 }
 
 private enum AppBrowserOverlayState: Equatable {
