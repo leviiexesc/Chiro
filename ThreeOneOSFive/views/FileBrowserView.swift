@@ -482,7 +482,7 @@ struct FileBrowserView: View {
     private var fileEmptyView: some View {
         VStack(spacing: 10) {
             Image(systemName: "folder")
-                .font(.system(size: 34, weight: .light))
+                .font(.system(size: AppTheme.emptyIconSize, weight: .light))
                 .foregroundStyle(.secondary)
             Text(language.text("browser.empty_folder"))
                 .font(.subheadline)
@@ -495,7 +495,7 @@ struct FileBrowserView: View {
     private var searchEmptyView: some View {
         VStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 32, weight: .light))
+                .font(.system(size: AppTheme.emptyIconSize, weight: .light))
                 .foregroundStyle(.secondary)
             Text(language.text("browser.search_empty"))
                 .font(.subheadline.weight(.medium))
@@ -1459,15 +1459,7 @@ private struct FileEntryRow: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 7, style: .continuous)
-                    .fill(tint.opacity(0.12))
-                Image(systemName: symbol)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(tint)
-            }
-            .frame(width: 30, height: 30)
-            .accessibilityHidden(true)
+            AppRowIcon(systemName: symbol, tint: tint)
 
             VStack(alignment: .leading, spacing: 1) {
                 Text(entry.name)
@@ -1483,7 +1475,7 @@ private struct FileEntryRow: View {
 
             if let selectionState {
                 Image(systemName: selectionState ? "checkmark.circle.fill" : "circle")
-                    .font(.title3)
+                    .font(.system(size: AppTheme.selectionIconSize, weight: .medium))
                     .foregroundStyle(selectionState ? AppTheme.accent : Color.secondary)
                     .accessibilityHidden(true)
             }
@@ -1634,7 +1626,7 @@ struct FileQuickLookView: View {
             } else if previewFailed {
                 VStack(spacing: 12) {
                     Image(systemName: "doc.questionmark")
-                        .font(.system(size: 36, weight: .light))
+                        .font(.system(size: AppTheme.emptyIconSize, weight: .light))
                         .foregroundStyle(.secondary)
                     Text(language.text("browser.preview_error"))
                         .font(.subheadline)

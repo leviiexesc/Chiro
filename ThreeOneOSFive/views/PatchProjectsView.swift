@@ -176,7 +176,7 @@ struct PatchProjectsView: View {
     private var emptyState: some View {
         VStack(spacing: 12) {
             Image(systemName: "shippingbox")
-                .font(.system(size: 38, weight: .light))
+                .font(.system(size: AppTheme.emptyIconSize, weight: .light))
                 .foregroundStyle(AppTheme.accent)
             Text(language.text("patch.empty_title"))
                 .font(.headline)
@@ -194,7 +194,7 @@ struct PatchProjectsView: View {
     private var searchEmptyState: some View {
         VStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 32, weight: .light))
+                .font(.system(size: AppTheme.emptyIconSize, weight: .light))
                 .foregroundStyle(.secondary)
             Text(language.text("patch.search_empty"))
                 .font(.headline)
@@ -214,11 +214,7 @@ private struct PatchProjectRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: item.isLocked ? "lock.doc.fill" : "shippingbox.fill")
-                .font(.title3)
-                .foregroundStyle(AppTheme.accent)
-                .frame(width: 34, height: 34)
-                .background(AppTheme.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 9))
+            AppRowIcon(systemName: item.isLocked ? "lock.doc.fill" : "shippingbox.fill")
             VStack(alignment: .leading, spacing: 3) {
                 Text(item.project?.name ?? language.text("patch.locked_project"))
                     .font(.body.weight(.semibold))

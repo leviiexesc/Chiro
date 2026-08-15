@@ -110,7 +110,7 @@ struct WallpaperLabView: View {
             if packages.isEmpty {
                 VStack(spacing: 10) {
                     Image(systemName: "photo.badge.plus")
-                        .font(.system(size: 34, weight: .light))
+                        .font(.system(size: AppTheme.emptyIconSize, weight: .light))
                         .foregroundStyle(AppTheme.accent)
                     Text(language.text("wallpaper.empty_packages"))
                         .font(.headline)
@@ -146,14 +146,7 @@ struct WallpaperLabView: View {
 
     private func packageRow(_ package: WallpaperStagedPackage) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: "photo.on.rectangle.angled")
-                .font(.title3)
-                .foregroundStyle(AppTheme.accent)
-                .frame(width: 36, height: 36)
-                .background(
-                    AppTheme.accent.opacity(0.12),
-                    in: RoundedRectangle(cornerRadius: 10, style: .continuous)
-                )
+            AppRowIcon(systemName: "photo.on.rectangle.angled")
             VStack(alignment: .leading, spacing: 3) {
                 Text(package.displayName)
                     .font(.body.weight(.semibold))
@@ -174,7 +167,7 @@ struct WallpaperLabView: View {
                 systemName: selectedPackageID == package.id
                     ? "checkmark.circle.fill" : "circle"
             )
-            .font(.title3)
+            .font(.system(size: AppTheme.selectionIconSize, weight: .medium))
             .foregroundStyle(
                 selectedPackageID == package.id ? AppTheme.accent : Color.secondary
             )

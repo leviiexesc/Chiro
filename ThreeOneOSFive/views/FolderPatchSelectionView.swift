@@ -24,7 +24,7 @@ struct FolderPatchSelectionView: View {
                 } else if candidates.isEmpty {
                     VStack(spacing: 10) {
                         Image(systemName: "folder")
-                            .font(.system(size: 36, weight: .light))
+                            .font(.system(size: AppTheme.emptyIconSize, weight: .light))
                             .foregroundStyle(.secondary)
                         Text(language.text("patch.folder_empty"))
                             .font(.headline)

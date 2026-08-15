@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
     @Environment(\.appLanguage) private var language
@@ -38,6 +39,7 @@ struct ContentView: View {
             }
         }
         .tint(AppTheme.accent)
+        .imageScale(.small)
         .onChange(of: patchDraftCoordinator.request?.id) { requestID in
             if requestID != nil { tabNavigation.select(AppSection.patches.rawValue) }
         }
@@ -57,7 +59,10 @@ struct ContentView: View {
             ForEach(featureVisibility.visibleSections) { section in
                 sectionContent(section)
                     .tabItem {
-                        Label(language.text(section.titleKey), systemImage: section.systemImage)
+                        CompactTabLabel(
+                            title: language.text(section.titleKey),
+                            systemImage: section.systemImage
+                        )
                     }
                     .tag(section.rawValue)
             }
@@ -138,6 +143,25 @@ struct ContentView: View {
             cleanerEnabled: cleanerEnabled,
             wallpapersEnabled: wallpapersEnabled
         )
+    }
+}
+
+private struct CompactTabLabel: View {
+    let title: String
+    let systemImage: String
+
+    @ViewBuilder
+    var body: some View {
+        if let image = UIImage(
+            systemName: systemImage,
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 17, weight: .medium)
+        )?.withRenderingMode(.alwaysTemplate) {
+            Image(uiImage: image)
+        } else {
+            Image(systemName: systemImage)
+                .font(.system(size: 17, weight: .medium))
+        }
+        Text(title)
     }
 }
 

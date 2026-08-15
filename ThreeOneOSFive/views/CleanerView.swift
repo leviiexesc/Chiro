@@ -122,7 +122,7 @@ struct CleanerView: View {
             if filteredRecords.isEmpty {
                 VStack(spacing: 8) {
                     Image(systemName: "magnifyingglass")
-                        .font(.title)
+                        .font(.system(size: AppTheme.emptyIconSize, weight: .light))
                         .foregroundStyle(.secondary)
                     Text(language.text("browser.search_empty"))
                         .font(.headline)
@@ -187,7 +187,7 @@ struct CleanerView: View {
                 .foregroundStyle(.secondary)
 
             Image(systemName: selectedBundleIDs.contains(record.id) ? "checkmark.circle.fill" : "circle")
-                .font(.title3)
+                .font(.system(size: AppTheme.selectionIconSize, weight: .medium))
                 .foregroundStyle(selectedBundleIDs.contains(record.id) ? AppTheme.accent : Color.secondary)
                 .accessibilityHidden(true)
         }
@@ -319,7 +319,7 @@ struct CleanerView: View {
                         .foregroundStyle(.secondary)
                 } else {
                     Image(systemName: "checkmark.circle")
-                        .font(.largeTitle)
+                        .font(.system(size: AppTheme.emptyIconSize, weight: .light))
                         .foregroundStyle(.secondary)
                     Text(language.text("cleaner.empty_title"))
                         .font(.headline)

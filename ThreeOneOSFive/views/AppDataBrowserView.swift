@@ -124,10 +124,7 @@ struct AppDataBrowserView: View {
                     )
                     NavigationLink(value: workspaceDestination) {
                         HStack(spacing: 10) {
-                            Image(systemName: "folder.fill")
-                                .font(.title3)
-                                .foregroundStyle(AppTheme.accent)
-                                .frame(width: 36, height: 36)
+                            AppRowIcon(systemName: "folder.fill")
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("3105")
                                     .font(.subheadline.weight(.semibold))
@@ -237,7 +234,7 @@ struct AppDataBrowserView: View {
     private var emptyView: some View {
         VStack(spacing: 16) {
             Image(systemName: "folder.badge.questionmark")
-                .font(.system(size: 48))
+                .font(.system(size: AppTheme.emptyIconSize, weight: .light))
                 .foregroundStyle(.secondary)
             Text(errorMessage ?? language.text("browser.empty"))
                 .font(.subheadline)
@@ -253,7 +250,7 @@ struct AppDataBrowserView: View {
     private var searchEmptyView: some View {
         VStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 32, weight: .light))
+                .font(.system(size: AppTheme.emptyIconSize, weight: .light))
                 .foregroundStyle(.secondary)
             Text(language.text("browser.search_empty"))
                 .font(.subheadline.weight(.medium))
@@ -403,12 +400,12 @@ struct BrowserAppIcon: View {
                     .scaledToFill()
             } else {
                 Image(systemName: "app")
-                    .font(.title3)
+                    .font(.system(size: AppTheme.rowIconSize, weight: .medium))
                     .foregroundStyle(.secondary)
             }
         }
-        .frame(width: 36, height: 36)
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .frame(width: AppTheme.appIconSize, height: AppTheme.appIconSize)
+        .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
         .accessibilityHidden(true)
         .onAppear {
             guard resolvedIcon == nil, !didRequestIcon else { return }
