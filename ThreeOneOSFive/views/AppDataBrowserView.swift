@@ -12,12 +12,10 @@ struct AppDataBrowserView: View {
     @State private var errorMessage: String?
     @State private var hasLoaded = false
     @State private var workspaceURL: URL?
-    @State private var navigationPath = NavigationPath()
+    @Binding private var navigationPath: [FileBrowserDestination]
 
-    let navigationResetRevision: Int
-
-    init(navigationResetRevision: Int = 0) {
-        self.navigationResetRevision = navigationResetRevision
+    init(navigationPath: Binding<[FileBrowserDestination]>) {
+        _navigationPath = navigationPath
     }
 
     private var filteredApps: [InstalledApp] {
@@ -72,15 +70,21 @@ struct AppDataBrowserView: View {
                     reload()
                 }
             }
-            .navigationDestination(for: AppDataBrowserDestination.self) { destination in
-                FileBrowserView(
-                    containerPath: destination.containerPath,
-                    title: destination.title,
-                    bundleID: destination.bundleID
-                )
-            }
-            .onChange(of: navigationResetRevision) { _ in
-                navigationPath = NavigationPath()
+            .navigationDestination(for: FileBrowserDestination.self) { destination in
+                if destination.startPath == destination.containerPath {
+                    FileBrowserView(
+                        containerPath: destination.containerPath,
+                        title: destination.title,
+                        bundleID: destination.bundleID
+                    )
+                } else {
+                    FileBrowserView(
+                        containerPath: destination.containerPath,
+                        startPath: destination.startPath,
+                        title: destination.title,
+                        bundleID: destination.bundleID
+                    )
+                }
             }
         }
     }
@@ -90,8 +94,9 @@ struct AppDataBrowserView: View {
             if let workspaceURL {
                 Section(language.text("browser.workspace")) {
                     NavigationLink(
-                        value: AppDataBrowserDestination(
+                        value: FileBrowserDestination(
                             containerPath: workspaceURL.path,
+                            startPath: workspaceURL.path,
                             title: "3105",
                             bundleID: nil
                         )
@@ -119,8 +124,9 @@ struct AppDataBrowserView: View {
                         appRow(app)
                     } else {
                         NavigationLink(
-                            value: AppDataBrowserDestination(
+                            value: FileBrowserDestination(
                                 containerPath: app.containerPath,
+                                startPath: app.containerPath,
                                 title: app.displayName,
                                 bundleID: app.bundleID
                             )
@@ -335,12 +341,6 @@ struct AppDataBrowserView: View {
             }
         }
     }
-}
-
-private struct AppDataBrowserDestination: Hashable {
-    let containerPath: String
-    let title: String
-    let bundleID: String?
 }
 
 private enum AppBrowserOverlayState: Equatable {

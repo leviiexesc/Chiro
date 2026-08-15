@@ -1,19 +1,27 @@
 struct AppTabNavigationState: Equatable {
-    static let filesTab = 1
-
     private(set) var selectedTab: Int
-    private(set) var filesNavigationRevision = 0
+    private(set) var filesNavigationPath: [FileBrowserDestination]
 
-    init(selectedTab: Int = 0) {
+    init(
+        selectedTab: Int = 0,
+        filesNavigationPath: [FileBrowserDestination] = []
+    ) {
         self.selectedTab = selectedTab
+        self.filesNavigationPath = filesNavigationPath
     }
 
     mutating func select(_ tab: Int) {
-        guard tab != selectedTab else { return }
-
-        if selectedTab == Self.filesTab {
-            filesNavigationRevision &+= 1
-        }
         selectedTab = tab
     }
+
+    mutating func setFilesNavigationPath(_ path: [FileBrowserDestination]) {
+        filesNavigationPath = path
+    }
+}
+
+struct FileBrowserDestination: Hashable {
+    let containerPath: String
+    let startPath: String
+    let title: String
+    let bundleID: String?
 }

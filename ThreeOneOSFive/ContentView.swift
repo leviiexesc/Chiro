@@ -97,7 +97,7 @@ struct ContentView: View {
             DashboardView()
         case .files:
             AppDataBrowserView(
-                navigationResetRevision: tabNavigation.filesNavigationRevision
+                navigationPath: filesNavigationPath
             )
         case .patches:
             PatchProjectsView()
@@ -112,6 +112,13 @@ struct ContentView: View {
         Binding(
             get: { tabNavigation.selectedTab },
             set: { tabNavigation.select($0) }
+        )
+    }
+
+    private var filesNavigationPath: Binding<[FileBrowserDestination]> {
+        Binding(
+            get: { tabNavigation.filesNavigationPath },
+            set: { tabNavigation.setFilesNavigationPath($0) }
         )
     }
 }

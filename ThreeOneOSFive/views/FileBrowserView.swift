@@ -338,14 +338,14 @@ struct FileBrowserView: View {
             .buttonStyle(.plain)
             .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 12))
         } else if entry.isDirectory {
-            NavigationLink {
-                FileBrowserView(
+            NavigationLink(
+                value: FileBrowserDestination(
                     containerPath: containerPath,
                     startPath: entry.path,
                     title: entry.name,
                     bundleID: bundleID
                 )
-            } label: {
+            ) {
                 FileEntryRow(entry: entry, language: language, selectionState: nil)
             }
             .contextMenu { fileActions(for: entry) }
