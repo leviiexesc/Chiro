@@ -91,7 +91,7 @@ struct FileBrowserView: View {
                         .textCase(nil)
                 }
             }
-            .listStyle(.plain)
+            .listStyle(.insetGrouped)
             .environment(\.defaultMinListRowHeight, 44)
             .scrollDismissesKeyboard(.interactively)
             .overlay {

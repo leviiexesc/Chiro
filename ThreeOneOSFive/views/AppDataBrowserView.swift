@@ -174,7 +174,7 @@ struct AppDataBrowserView: View {
                 .textCase(nil)
             }
         }
-        .listStyle(.plain)
+        .listStyle(.insetGrouped)
         .environment(\.defaultMinListRowHeight, 48)
         .scrollDismissesKeyboard(.interactively)
         .overlay {
