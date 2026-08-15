@@ -178,11 +178,11 @@ private extension AppSection {
 
     var systemImage: String {
         switch self {
-        case .home: return "house"
-        case .files: return "folder"
-        case .patches: return "shippingbox"
+        case .home: return "house.fill"
+        case .files: return "folder.fill"
+        case .patches: return "shippingbox.fill"
         case .cleaner: return "sparkles"
-        case .wallpapers: return "photo.on.rectangle.angled"
+        case .wallpapers: return "photo.on.rectangle.angled.fill"
         }
     }
 }
