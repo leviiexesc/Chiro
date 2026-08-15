@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0-E6753A?style=flat-square">
+  <img alt="Version" src="https://img.shields.io/badge/version-1.0.1-E6753A?style=flat-square">
   <img alt="iOS" src="https://img.shields.io/badge/iOS-26.0–26.6.1%20%7C%2027%20beta%201–4-222222?style=flat-square">
   <img alt="Swift" src="https://img.shields.io/badge/Swift-5-F05138?style=flat-square&logo=swift&logoColor=white">
   <img alt="Languages" src="https://img.shields.io/badge/languages-English%20%7C%20Tiếng%20Việt%20%7C%20简体中文-E6753A?style=flat-square">
@@ -17,6 +17,7 @@
 
 <p align="center">
   <a href="README.vi.md">Tiếng Việt</a> ·
+  <a href="docs/PATCH_GUIDE.md">Patch guide</a> ·
   <a href="#compatibility">Compatibility</a> ·
   <a href="#license">License</a>
 </p>
@@ -33,6 +34,16 @@
   &nbsp;
   <img src="docs/images/cleaner.png" width="245" alt="3105 Cleaner">
 </p>
+
+## What's new in 1.0.1
+
+- **Patch workspace v2** — build patches as a normal bundle-based directory tree under `On My iPhone/3105/Patches`; Apply and Export synchronize the workspace automatically.
+- **Safer recovery** — original files are journaled before writes; Restore puts existing files back, removes files introduced by the patch, and removes patch-created directories once empty.
+- **More capable Files tab** — independent tabs, preserved folder position, multi-selection, ZIP creation and extraction, plus a denser and more consistent grouped layout.
+- **Responsive navigation** — iPad split-view and landscape support, optional Cleaner/Wallpaper tabs, stable search fields, and refined icon/row sizing.
+- **Wallpaper guidance** — corrected PosterBoard activation steps, including the iOS 27 Collections prerequisite.
+
+See the complete [Patch workspace guide](docs/PATCH_GUIDE.md).
 
 ## Highlights
 
