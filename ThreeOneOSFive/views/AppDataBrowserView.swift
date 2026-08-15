@@ -43,11 +43,6 @@ struct AppDataBrowserView: View {
             appList
             .navigationTitle(language.text("browser.title"))
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(
-                text: $searchText,
-                placement: .navigationBarDrawer(displayMode: .always),
-                prompt: language.text("browser.search")
-            )
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     FilesTabToolbarButton(session: $tabSession)
@@ -103,6 +98,21 @@ struct AppDataBrowserView: View {
     }
 
     private var appList: some View {
+        VStack(spacing: 0) {
+            if horizontalSizeClass == .regular {
+                FilesTabStrip(session: $tabSession)
+            }
+            AppSearchField(
+                text: $searchText,
+                prompt: language.text("browser.search"),
+                clearLabel: language.text("common.clear")
+            )
+            Divider()
+            appRows
+        }
+    }
+
+    private var appRows: some View {
         List {
             if let workspaceURL {
                 Section(language.text("browser.workspace")) {
@@ -170,11 +180,6 @@ struct AppDataBrowserView: View {
         .listStyle(.plain)
         .environment(\.defaultMinListRowHeight, 48)
         .scrollDismissesKeyboard(.interactively)
-        .safeAreaInset(edge: .top, spacing: 0) {
-            if horizontalSizeClass == .regular {
-                FilesTabStrip(session: $tabSession)
-            }
-        }
         .overlay {
             Group {
                 switch overlayState {

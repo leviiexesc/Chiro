@@ -13,6 +13,48 @@ enum AppTheme {
     static let pageInset: CGFloat = 16
 }
 
+struct AppSearchField: View {
+    @Binding var text: String
+    let prompt: String
+    let clearLabel: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+
+            TextField(prompt, text: $text)
+                .font(.body)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .submitLabel(.search)
+
+            if !text.isEmpty {
+                Button {
+                    text = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(.tertiary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(clearLabel)
+            }
+        }
+        .padding(.horizontal, 11)
+        .frame(minHeight: 36)
+        .background(
+            Color(uiColor: .secondarySystemFill),
+            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+        )
+        .padding(.horizontal, AppTheme.pageInset)
+        .padding(.vertical, 8)
+        .background(.bar)
+    }
+}
+
 struct AppLogo: View {
     var size: CGFloat = 44
 

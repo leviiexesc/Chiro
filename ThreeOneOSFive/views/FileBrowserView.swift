@@ -72,37 +72,45 @@ struct FileBrowserView: View {
     }
 
     var body: some View {
-        List {
-            Section {
-                ForEach(filteredEntries) { entry in
-                    fileRow(entry)
-                }
-            } header: {
-                Text(language.text("browser.items_count", Int64(filteredEntries.count)))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .textCase(nil)
-            }
-        }
-        .listStyle(.plain)
-        .environment(\.defaultMinListRowHeight, 44)
-        .scrollDismissesKeyboard(.interactively)
-        .overlay {
-            Group {
-                switch overlayState {
-                case .loading:
-                    ProgressView(language.text("browser.loading"))
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                case .empty:
-                    fileEmptyView
-                case .noResults:
-                    searchEmptyView
-                case .none:
-                    EmptyView()
+        VStack(spacing: 0) {
+            AppSearchField(
+                text: $fileSearchText,
+                prompt: language.text("browser.search_files"),
+                clearLabel: language.text("common.clear")
+            )
+            Divider()
+            List {
+                Section {
+                    ForEach(filteredEntries) { entry in
+                        fileRow(entry)
+                    }
+                } header: {
+                    Text(language.text("browser.items_count", Int64(filteredEntries.count)))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .textCase(nil)
                 }
             }
-            .transition(.opacity)
-            .animation(interfaceAnimation, value: overlayState)
+            .listStyle(.plain)
+            .environment(\.defaultMinListRowHeight, 44)
+            .scrollDismissesKeyboard(.interactively)
+            .overlay {
+                Group {
+                    switch overlayState {
+                    case .loading:
+                        ProgressView(language.text("browser.loading"))
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    case .empty:
+                        fileEmptyView
+                    case .noResults:
+                        searchEmptyView
+                    case .none:
+                        EmptyView()
+                    }
+                }
+                .transition(.opacity)
+                .animation(interfaceAnimation, value: overlayState)
+            }
         }
         .navigationTitle(currentPath == containerPath ? title : (currentPath as NSString).lastPathComponent)
         .navigationBarTitleDisplayMode(.inline)
@@ -115,11 +123,6 @@ struct FileBrowserView: View {
                 filesTabSession: filesTabSession
             )
         }
-        .searchable(
-            text: $fileSearchText,
-            placement: .navigationBarDrawer(displayMode: .always),
-            prompt: language.text("browser.search_files")
-        )
         .toolbar {
             if let filesTabSession {
                 ToolbarItem(placement: .navigationBarTrailing) {

@@ -4,6 +4,7 @@
 "common.done" = "完成";
 "common.ok" = "好";
 "common.cancel" = "取消";
+"common.clear" = "清除搜索";
 "common.failed" = "失败";
 "common.version" = "版本 %@";
 "common.device" = "设备";

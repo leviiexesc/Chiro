@@ -4,6 +4,7 @@
 "common.done" = "Done";
 "common.ok" = "OK";
 "common.cancel" = "Cancel";
+"common.clear" = "Clear search";
 "common.failed" = "Failed";
 "common.version" = "Version %@";
 "common.device" = "Device";

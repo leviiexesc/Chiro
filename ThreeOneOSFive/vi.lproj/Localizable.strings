@@ -4,6 +4,7 @@
 "common.done" = "Xong";
 "common.ok" = "OK";
 "common.cancel" = "Hủy";
+"common.clear" = "Xóa tìm kiếm";
 "common.failed" = "Thất bại";
 "common.version" = "Phiên bản %@";
 "common.device" = "Thiết bị";

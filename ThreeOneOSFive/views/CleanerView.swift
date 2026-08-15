@@ -64,8 +64,16 @@ struct CleanerView: View {
 
     var body: some View {
         NavigationStack {
-            cleanerList
-            .listStyle(.insetGrouped)
+            VStack(spacing: 0) {
+                AppSearchField(
+                    text: $searchText,
+                    prompt: language.text("cleaner.search"),
+                    clearLabel: language.text("common.clear")
+                )
+                Divider()
+                cleanerList
+                    .listStyle(.insetGrouped)
+            }
             .navigationTitle(language.text("cleaner.title"))
             .navigationBarTitleDisplayMode(.inline)
             .scrollDismissesKeyboard(.interactively)
@@ -88,11 +96,6 @@ struct CleanerView: View {
                 summarySection
                 applicationsSection
             }
-            .searchable(
-                text: $searchText,
-                placement: .navigationBarDrawer(displayMode: .always),
-                prompt: language.text("cleaner.search")
-            )
         }
     }
 

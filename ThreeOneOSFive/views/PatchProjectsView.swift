@@ -48,30 +48,33 @@ struct PatchProjectsView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                if store.items.isEmpty && !store.isBusy {
-                    emptyState
-                        .listRowSeparator(.hidden)
-                } else if filteredItems.isEmpty && !store.isBusy {
-                    searchEmptyState
-                        .listRowSeparator(.hidden)
-                } else {
-                    ForEach(filteredItems) { item in
-                        itemRow(item)
-                    }
-                    .onDelete { offsets in
-                        offsets.map { filteredItems[$0] }.forEach(store.delete)
+            VStack(spacing: 0) {
+                AppSearchField(
+                    text: $searchText,
+                    prompt: language.text("patch.search"),
+                    clearLabel: language.text("common.clear")
+                )
+                Divider()
+                List {
+                    if store.items.isEmpty && !store.isBusy {
+                        emptyState
+                            .listRowSeparator(.hidden)
+                    } else if filteredItems.isEmpty && !store.isBusy {
+                        searchEmptyState
+                            .listRowSeparator(.hidden)
+                    } else {
+                        ForEach(filteredItems) { item in
+                            itemRow(item)
+                        }
+                        .onDelete { offsets in
+                            offsets.map { filteredItems[$0] }.forEach(store.delete)
+                        }
                     }
                 }
+                .listStyle(.plain)
             }
-            .listStyle(.plain)
             .navigationTitle(language.text("patch.title"))
             .navigationBarTitleDisplayMode(.inline)
-            .searchable(
-                text: $searchText,
-                placement: .navigationBarDrawer(displayMode: .always),
-                prompt: language.text("patch.search")
-            )
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
