@@ -408,7 +408,7 @@
 "wallpaper.import" = "Nhập .tendies";
 "wallpaper.package_summary" = "%lld descriptor · %@";
 "wallpaper.packages_footer" = "Chọn một gói để cài. Vuốt sang trái để xóa gói khỏi vùng staging cục bộ.";
-"wallpaper.after_apply_guide" = "Sau khi áp dụng, mở trình chọn hình nền Màn hình khóa. Nếu chưa thấy hình nền, đóng PosterBoard trong đa nhiệm rồi mở lại.";
+"wallpaper.after_apply_guide" = "Sau khi áp dụng, mở đa nhiệm và vuốt lên để đóng PosterBoard. Sau đó mở lại PosterBoard rồi kiểm tra trình chọn hình nền Màn hình khóa.";
 "wallpaper.recovery" = "Khôi phục";
 "wallpaper.no_recovery" = "Chưa có lần cài nào có thể khôi phục.";
 "wallpaper.recovery_summary" = "%lld descriptor đã cài";
