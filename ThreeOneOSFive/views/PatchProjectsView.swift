@@ -71,7 +71,7 @@ struct PatchProjectsView: View {
                         }
                     }
                 }
-                .listStyle(.plain)
+                .listStyle(.insetGrouped)
             }
             .navigationTitle(language.text("patch.title"))
             .navigationBarTitleDisplayMode(.inline)
@@ -404,6 +404,7 @@ private struct PatchProjectDetailView: View {
                 }
             }
         }
+        .listStyle(.insetGrouped)
         .navigationTitle(item?.project?.name ?? language.text("patch.title"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
