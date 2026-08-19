@@ -42,12 +42,11 @@ struct SettingsView: View {
                     HStack {
                         Text(language.text("settings.current_version"))
                         Spacer()
-                        Label(
-                            language.text(appState.isSupported ? "settings.supported" : "settings.unsupported"),
-                            systemImage: appState.isSupported ? "checkmark.circle.fill" : "xmark.circle.fill"
-                        )
+                        Text(language.text(appState.isSupported ? "settings.supported" : "settings.unsupported"))
                         .foregroundStyle(appState.isSupported ? Color.green : Color.red)
                     }
+                    LabeledContent("iOS 17", value: ExploitSupportPolicy.verifiedIOS17Range)
+                    LabeledContent("iOS 18", value: ExploitSupportPolicy.verifiedIOS18Range)
                     LabeledContent("iOS 26", value: ExploitSupportPolicy.verifiedIOS26Range)
                     VStack(alignment: .leading, spacing: 8) {
                         Text("iOS 27.0")
@@ -63,6 +62,19 @@ struct SettingsView: View {
                     Text(language.text("settings.verified_versions"))
                 } footer: {
                     Text(language.text("settings.supported_versions_footer"))
+                }
+
+                Section(language.text("settings.social_media")) {
+                    creditsRow(
+                        name: "GitHub",
+                        role: language.text("social.github_role"),
+                        url: "https://github.com/YangJiiii/3105"
+                    )
+                    creditsRow(
+                        name: "Cộng Đồng IOSVN",
+                        role: language.text("social.iosvn_role"),
+                        url: "https://t.me/ioscrackvn"
+                    )
                 }
 
                 Section(language.text("settings.credits")) {

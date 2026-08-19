@@ -255,6 +255,14 @@ private struct PatchUnlockView: View {
                         .textContentType(.password)
                         .submitLabel(.done)
                         .onSubmit(unlock)
+                        .onChange(of: password) { _ in
+                            store.clearUnlockError()
+                        }
+                    if let errorKey = store.unlockErrorKey {
+                        Text(language.text(errorKey))
+                            .font(.footnote)
+                            .foregroundStyle(.red)
+                    }
                 } footer: {
                     Text(language.text("patch.password_once_message"))
                 }

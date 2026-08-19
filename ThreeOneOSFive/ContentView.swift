@@ -52,6 +52,9 @@ struct ContentView: View {
         .onChange(of: wallpapersEnabled) { _ in
             tabNavigation.reconcileSelection(with: featureVisibility)
         }
+        .onAppear {
+            tabNavigation.reconcileSelection(with: featureVisibility)
+        }
     }
 
     private var compactLayout: some View {
@@ -97,8 +100,8 @@ struct ContentView: View {
             .navigationTitle("3105")
             .navigationSplitViewColumnWidth(min: 210, ideal: 240, max: 300)
         } detail: {
-            sectionContent(AppSection(rawValue: tabNavigation.selectedTab) ?? .home)
-                .id(tabNavigation.selectedTab)
+            sectionContent(selectedVisibleSection)
+                .id(selectedVisibleSection.rawValue)
         }
         .navigationSplitViewStyle(.balanced)
     }
@@ -109,7 +112,8 @@ struct ContentView: View {
         case .home:
             DashboardView(
                 cleanerEnabled: $cleanerEnabled,
-                wallpapersEnabled: $wallpapersEnabled
+                wallpapersEnabled: $wallpapersEnabled,
+                wallpapersSupported: wallpapersSupported
             )
         case .files:
             AppDataBrowserView(
@@ -141,8 +145,21 @@ struct ContentView: View {
     private var featureVisibility: FeatureVisibility {
         FeatureVisibility(
             cleanerEnabled: cleanerEnabled,
-            wallpapersEnabled: wallpapersEnabled
+            wallpapersEnabled: wallpapersEnabled,
+            wallpapersSupported: wallpapersSupported
         )
+    }
+
+    private var wallpapersSupported: Bool {
+        WallpaperFeatureSupportPolicy.isSupported(major: AppInfo.versionTuple.major)
+    }
+
+    private var selectedVisibleSection: AppSection {
+        guard let section = AppSection(rawValue: tabNavigation.selectedTab),
+              featureVisibility.isVisible(section) else {
+            return .home
+        }
+        return section
     }
 }
 
@@ -182,7 +199,7 @@ private extension AppSection {
         case .files: return "folder.fill"
         case .patches: return "shippingbox.fill"
         case .cleaner: return "sparkles"
-        case .wallpapers: return "photo.on.rectangle.angled.fill"
+        case .wallpapers: return "photo.on.rectangle.angled"
         }
     }
 }
@@ -194,13 +211,13 @@ private struct DashboardView: View {
     @State private var showLogs = false
     @Binding var cleanerEnabled: Bool
     @Binding var wallpapersEnabled: Bool
+    let wallpapersSupported: Bool
 
     var body: some View {
         NavigationStack {
             List {
                 deviceSection
                 featuresSection
-                signingSection
             }
             .navigationBarTitleDisplayMode(.inline)
             .tint(AppTheme.accent)
@@ -228,29 +245,15 @@ private struct DashboardView: View {
             Toggle(isOn: $cleanerEnabled) {
                 Label(language.text("tab.cleaner"), systemImage: "sparkles")
             }
-            Toggle(isOn: $wallpapersEnabled) {
-                Label(language.text("tab.wallpapers"), systemImage: "photo.on.rectangle.angled")
+            if wallpapersSupported {
+                Toggle(isOn: $wallpapersEnabled) {
+                    Label(language.text("tab.wallpapers"), systemImage: "photo.on.rectangle.angled")
+                }
             }
         } header: {
             Text(language.text("dashboard.features"))
         } footer: {
             Text(language.text("dashboard.features_footer"))
-        }
-    }
-
-    private var signingSection: some View {
-        Section {
-            Label {
-                Text(language.text("dashboard.enterprise_signing"))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            } icon: {
-                Image(systemName: "checkmark.seal")
-                    .foregroundStyle(AppTheme.accent)
-            }
-            .padding(.vertical, 4)
-        } header: {
-            Text(language.text("dashboard.installation"))
         }
     }
 
@@ -267,11 +270,26 @@ private struct DashboardView: View {
             HStack {
                 Text(language.text("settings.compatibility"))
                 Spacer()
-                Label(
-                    language.text(appState.isSupported ? "settings.supported" : "settings.unsupported"),
-                    systemImage: appState.isSupported ? "checkmark.circle.fill" : "xmark.circle.fill"
-                )
+                Text(language.text(appState.isSupported ? "settings.supported" : "settings.unsupported"))
                 .foregroundStyle(appState.isSupported ? Color.green : Color.red)
+            }
+
+            if appState.kernelExploitApplicable && AppInfo.versionTuple.major < 26 {
+                HStack {
+                    Text(language.text("dashboard.kernel_status"))
+                    Spacer()
+                    if appState.kernelExploitRunning {
+                        HStack(spacing: 6) {
+                            ProgressView().controlSize(.small)
+                            Text(language.text("dashboard.kernel_running"))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        Text(language.text(appState.exploitStatus.isSuccess ? "dashboard.kernel_active" : "dashboard.kernel_inactive"))
+                        .foregroundStyle(appState.exploitStatus.isSuccess ? Color.green : Color.secondary)
+                    }
+                }
             }
         } header: {
             Text(language.text("common.device"))
