@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RepositoryHomeView: View {
     @Environment(\.appLanguage) private var language
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @EnvironmentObject private var store: PackageRepositoryStore
     @State private var feed: [RepositoryPackageRecord] = []
 
@@ -73,14 +74,25 @@ struct RepositoryHomeView: View {
         VStack(alignment: .leading, spacing: 12) {
             sectionHeader("repository.for_you")
 
-            LazyVStack(spacing: 12) {
-                ForEach(Array(feed.prefix(featuredPackageCount))) { record in
-                    NavigationLink(value: record) {
-                        RepositoryFeedCard(record: record)
+            GeometryReader { proxy in
+                let cardWidth = featuredCardWidth(availableWidth: proxy.size.width)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(alignment: .top, spacing: featuredCardSpacing) {
+                        ForEach(Array(feed.prefix(featuredPackageCount))) { record in
+                            NavigationLink(value: record) {
+                                RepositoryFeaturedCard(
+                                    record: record,
+                                    width: cardWidth,
+                                    height: featuredCardHeight
+                                )
+                            }
+                            .buttonStyle(RepositoryCardButtonStyle())
+                        }
                     }
-                    .buttonStyle(RepositoryCardButtonStyle())
                 }
             }
+            .frame(height: featuredCardHeight)
         }
     }
 
@@ -175,6 +187,34 @@ struct RepositoryHomeView: View {
 
     private var featuredPackageCount: Int {
         min(feed.count, 3)
+    }
+
+    private var featuredCardSpacing: CGFloat { 10 }
+
+    private var featuredCardHeight: CGFloat {
+        if dynamicTypeSize.isAccessibilitySize {
+            return 180
+        }
+        if dynamicTypeSize >= .xxLarge {
+            return 140
+        }
+        return 112
+    }
+
+    private func featuredCardWidth(availableWidth: CGFloat) -> CGFloat {
+        if dynamicTypeSize.isAccessibilitySize {
+            return min(320, max(260, availableWidth * 0.82))
+        }
+        if dynamicTypeSize >= .xxLarge {
+            return min(
+                260,
+                max(200, (availableWidth - featuredCardSpacing) / 1.45)
+            )
+        }
+        return min(
+            240,
+            max(140, (availableWidth - featuredCardSpacing) / 2)
+        )
     }
 }
 
@@ -406,88 +446,95 @@ struct RepositorySearchView: View {
     }
 }
 
-private struct RepositoryFeedCard: View {
-    @Environment(\.appLanguage) private var language
+private struct RepositoryFeaturedCard: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @StateObject private var imageLoader = RepositoryImageLoader()
     let record: RepositoryPackageRecord
+    let width: CGFloat
+    let height: CGFloat
 
     var body: some View {
-        Group {
-            if dynamicTypeSize >= .xxLarge {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack(alignment: .center, spacing: 14) {
-                        RepositoryPackageIcon(
-                            package: record.package,
-                            size: 60
-                        )
-                        Text(record.package.name)
-                            .font(.headline)
-                            .foregroundStyle(.primary)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Spacer(minLength: 4)
-                        disclosureIndicator
-                    }
+        ZStack(alignment: .bottomLeading) {
+            artwork
 
-                    Text(record.package.summary)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    packageMeta
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            } else {
-                HStack(alignment: .center, spacing: 14) {
-                    RepositoryPackageIcon(package: record.package, size: 60)
+            LinearGradient(
+                stops: [
+                    .init(color: .clear, location: 0.28),
+                    .init(color: .black.opacity(0.16), location: 0.56),
+                    .init(color: .black.opacity(0.78), location: 1)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .accessibilityHidden(true)
 
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text(record.package.name)
-                            .font(.headline)
-                            .foregroundStyle(.primary)
-                            .lineLimit(2)
-                        Text(record.package.summary)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
-                        packageMeta
-                            .lineLimit(1)
-                    }
+            VStack(alignment: .leading, spacing: 4) {
+                Text(record.package.name)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? 3 : 2)
 
-                    Spacer(minLength: 4)
-                    disclosureIndicator
-                }
+                Text(record.package.author)
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(.white.opacity(0.84))
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? 2 : 1)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(10)
+            .shadow(color: .black.opacity(0.42), radius: 1, y: 1)
         }
-        .padding(AppTheme.contentCardPadding)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            Color(uiColor: .systemBackground),
-            in: RoundedRectangle(
-                cornerRadius: AppTheme.contentCardCornerRadius,
+        .frame(width: width, height: height, alignment: .bottomLeading)
+        .background(Color(uiColor: .secondarySystemFill))
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: 14,
                 style: .continuous
             )
         )
         .overlay {
-            AppCardBorder()
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .strokeBorder(
+                    Color(uiColor: .separator).opacity(0.24),
+                    lineWidth: 0.5
+                )
+                .accessibilityHidden(true)
         }
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
+        .task(id: record.package.iconURL) {
+            guard let iconURL = record.package.iconURL else { return }
+            await imageLoader.load(url: iconURL, maximumPixelSize: 640)
+        }
     }
 
-    private var packageMeta: some View {
-        Text(language.text(
-            "repository.home_package_meta",
-            record.package.author,
-            record.sourceName
-        ))
-        .font(.caption)
-        .foregroundStyle(.secondary)
-    }
-
-    private var disclosureIndicator: some View {
-        Image(systemName: "chevron.right")
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(.tertiary)
+    private var artwork: some View {
+        Rectangle()
+            .fill(Color(uiColor: .secondarySystemFill))
+            .overlay {
+                if let image = imageLoader.image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if imageLoader.didFail {
+                    placeholder
+                } else if record.package.iconURL == nil {
+                    placeholder
+                } else {
+                    ProgressView()
+                        .tint(.white)
+                }
+            }
+            .clipped()
             .accessibilityHidden(true)
+    }
+
+    private var placeholder: some View {
+        Image(systemName: record.package.kind == .wallpaper
+            ? "photo.fill"
+            : "shippingbox.fill")
+            .font(.system(size: 30, weight: .medium))
+            .foregroundStyle(.white.opacity(0.82))
     }
 }
 
