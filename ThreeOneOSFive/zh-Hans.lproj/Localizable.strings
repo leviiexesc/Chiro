@@ -204,7 +204,7 @@
 "patch.reset_confirm_message" = "请先关闭目标应用或游戏。当前运行时更改将替换为此 .3105 软件包最初应用的内容。";
 "patch.created_message" = "补丁项目已创建。";
 "patch.updated_message" = "补丁项目已更新，密码未更改。";
-"patch.imported_message" = ".3105 软件包已导入。";
+"patch.imported_message" = "软件包安装成功。你可以在“已安装”中打开它。";
 "patch.unlocked_message" = "已解锁。此设备不会再次询问该软件包的密码。";
 "patch.workspace_synced_message" = "补丁工作区已同步。";
 "patch.applied_message" = "所有补丁规则均已应用，原始文件已备份。";

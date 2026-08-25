@@ -204,7 +204,7 @@
 "patch.reset_confirm_message" = "Hãy đóng app/game đích trước. Mọi thay đổi runtime hiện tại sẽ được thay bằng đúng nội dung đã Apply từ gói .3105 này.";
 "patch.created_message" = "Đã tạo dự án patch.";
 "patch.updated_message" = "Đã cập nhật dự án mà không thay đổi mật khẩu.";
-"patch.imported_message" = "Đã nhập gói .3105.";
+"patch.imported_message" = "Đã cài đặt gói thành công. Bạn có thể mở gói trong mục Đã cài.";
 "patch.unlocked_message" = "Đã mở khóa. Thiết bị này sẽ không hỏi lại mật khẩu của gói này.";
 "patch.workspace_synced_message" = "Đã đồng bộ workspace của patch.";
 "patch.applied_message" = "Đã áp dụng mọi quy tắc và sao lưu các file gốc.";

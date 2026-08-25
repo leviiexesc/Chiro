@@ -1049,23 +1049,77 @@ private enum BuiltInTool: String, Identifiable {
     var id: String { rawValue }
 }
 
-private struct RepositoryStorePresentationModifier: ViewModifier {
-    @Environment(\.appLanguage) private var language
-    @ObservedObject var store: PackageRepositoryStore
+private enum StorePresentationAlert: Identifiable {
+    case patch(PatchStoreAlert)
+    case repository(RepositoryStoreAlert)
 
-    func body(content: Content) -> some View {
-        content.alert(item: $store.alert) { alert in
-            Alert(
-                title: Text(language.text(alert.titleKey)),
-                message: Text(language.text(alert.messageKey)),
-                dismissButton: .default(Text(language.text("common.ok")))
-            )
+    var id: String {
+        switch self {
+        case .patch(let alert):
+            return "patch:" + alert.id.uuidString
+        case .repository(let alert):
+            return "repository:" + alert.id.uuidString
         }
     }
 }
 
+private struct RepositoryStorePresentationModifier: ViewModifier {
+    @Environment(\.appLanguage) private var language
+    @ObservedObject var store: PackageRepositoryStore
+    @ObservedObject var patchStore: PatchProjectStore
+
+    func body(content: Content) -> some View {
+        content.alert(item: activeAlert) { activeAlert in
+            switch activeAlert {
+            case .patch(let alert):
+                Alert(
+                    title: Text(language.text(alert.titleKey)),
+                    message: Text(alert.message(language: language)),
+                    dismissButton: .default(Text(language.text("common.ok")))
+                )
+            case .repository(let alert):
+                Alert(
+                    title: Text(language.text(alert.titleKey)),
+                    message: Text(language.text(alert.messageKey)),
+                    dismissButton: .default(Text(language.text("common.ok")))
+                )
+            }
+        }
+    }
+
+    private var activeAlert: Binding<StorePresentationAlert?> {
+        Binding(
+            get: {
+                if let repositoryAlert = store.alert {
+                    return .repository(repositoryAlert)
+                }
+                if let patchAlert = patchStore.alert {
+                    return .patch(patchAlert)
+                }
+                return nil
+            },
+            set: { newValue in
+                guard newValue == nil else { return }
+                if store.alert != nil {
+                    store.alert = nil
+                } else {
+                    patchStore.alert = nil
+                }
+            }
+        )
+    }
+}
+
 extension View {
-    func repositoryStorePresentation(_ store: PackageRepositoryStore) -> some View {
-        modifier(RepositoryStorePresentationModifier(store: store))
+    func repositoryStorePresentation(
+        _ store: PackageRepositoryStore,
+        patchStore: PatchProjectStore
+    ) -> some View {
+        modifier(
+            RepositoryStorePresentationModifier(
+                store: store,
+                patchStore: patchStore
+            )
+        )
     }
 }

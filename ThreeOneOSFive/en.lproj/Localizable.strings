@@ -204,7 +204,7 @@
 "patch.reset_confirm_message" = "Close the target apps first. Current runtime changes will be replaced with the exact content originally applied from this .3105 package.";
 "patch.created_message" = "The patch project was created.";
 "patch.updated_message" = "The patch project was updated without changing its password.";
-"patch.imported_message" = "The .3105 package was imported.";
+"patch.imported_message" = "The package was installed successfully. You can open it from Installed.";
 "patch.unlocked_message" = "Unlocked. This device will not ask for this package password again.";
 "patch.workspace_synced_message" = "The patch workspace was synchronized.";
 "patch.applied_message" = "All patch rules were applied and the originals were backed up.";

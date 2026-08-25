@@ -636,20 +636,12 @@ struct PatchUnlockView: View {
 }
 
 private struct PatchStorePresentationModifier: ViewModifier {
-    @Environment(\.appLanguage) private var language
     @ObservedObject var store: PatchProjectStore
 
     func body(content: Content) -> some View {
         content
             .sheet(item: $store.passwordRequest, onDismiss: store.cancelUnlock) { request in
                 PatchUnlockView(store: store, request: request)
-            }
-            .alert(item: $store.alert) { alert in
-                Alert(
-                    title: Text(language.text(alert.titleKey)),
-                    message: Text(alert.message(language: language)),
-                    dismissButton: .default(Text(language.text("common.ok")))
-                )
             }
     }
 }

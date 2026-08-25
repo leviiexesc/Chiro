@@ -66,7 +66,7 @@ struct ContentView: View {
         .sheet(isPresented: $showSettings) { SettingsView() }
         .sheet(isPresented: $showLogs) { LogView() }
         .patchStorePresentation(patchStore)
-        .repositoryStorePresentation(repositoryStore)
+        .repositoryStorePresentation(repositoryStore, patchStore: patchStore)
     }
 
     private var compactLayout: some View {
