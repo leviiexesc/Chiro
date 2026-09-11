@@ -309,31 +309,29 @@ struct CleanerView: View {
 
     private var emptySection: some View {
         Section {
-            VStack(spacing: 12) {
-                if isScanning {
+            if isScanning {
+                VStack(spacing: 12) {
                     ProgressView()
-                    Text(language.text("cleaner.scanning"))
-                        .font(.headline)
+                    Text(language.text("cleaner.scanning")).font(.headline)
                     Text(language.text("cleaner.scanned_count", Int64(scannedAppCount)))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                } else {
-                    Image(systemName: "checkmark.circle")
-                        .font(.system(size: AppTheme.emptyIconSize, weight: .light))
-                        .foregroundStyle(.secondary)
-                    Text(language.text("cleaner.empty_title"))
-                        .font(.headline)
-                    Text(language.text("cleaner.empty_message"))
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 48)
+            } else {
+                ReferenceEmptyCard(
+                    systemName: "checkmark.circle",
+                    title: language.text("cleaner.empty_title"),
+                    message: language.text("cleaner.empty_message")
+                ) {
                     Button(language.text("cleaner.scan_again")) { reload() }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.borderedProminent)
                         .controlSize(.large)
                 }
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
             }
-            .multilineTextAlignment(.center)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 32)
         }
     }
 

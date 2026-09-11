@@ -117,11 +117,11 @@
 "patch.title" = "Patches";
 "patch.add" = "Add patch project";
 "patch.new" = "New Patch";
-"patch.import" = "Import .Chiro";
-"patch.export" = "Export .Chiro";
+"patch.import" = "Import .3105";
+"patch.export" = "Export .3105";
 "patch.edit" = "Edit";
 "patch.empty_title" = "No Patch Projects";
-"patch.empty_message" = "Create a project or import a .Chiro package.";
+"patch.empty_message" = "Create a project or import a .3105 package.";
 "patch.locked_project" = "Locked Patch";
 "patch.tap_to_unlock" = "Tap to enter its password";
 "patch.password_protected" = "Password protected";
@@ -151,7 +151,7 @@
 "patch.workspace_edit_footer" = "After creation, manage the complete bundle tree from the Chiro workspace in Files.";
 "patch.workspace" = "Workspace";
 "patch.open_workspace" = "Open Patch Files";
-"patch.workspace_detail_footer" = "Edit this bundle tree directly. Apply and Export automatically synchronize it into the encrypted .Chiro package.";
+"patch.workspace_detail_footer" = "Edit this bundle tree directly. Apply and Export automatically synchronize it into the encrypted .3105 package.";
 "patch.legacy_footer" = "Legacy v1 patch. It remains fully usable in this version of Chiro.";
 "patch.files" = "Files";
 "patch.folders" = "Folders";

@@ -435,22 +435,17 @@ struct PatchProjectsView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "shippingbox")
-                .font(.system(size: AppTheme.emptyIconSize, weight: .light))
-                .foregroundStyle(AppTheme.accent)
-            Text(language.text("installed.empty_title"))
-                .font(.headline)
-            Text(language.text("installed.empty_message"))
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+        ReferenceEmptyCard(
+            systemName: "shippingbox",
+            title: language.text("installed.empty_title"),
+            message: language.text("installed.empty_message")
+        ) {
             Button(language.text("patch.new")) { showCreate = true }
-                .buttonStyle(.bordered)
+                .buttonStyle(.borderedProminent)
                 .controlSize(.large)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 64)
+        .listRowInsets(EdgeInsets())
+        .listRowBackground(Color.clear)
     }
 
     private var loadingState: some View {

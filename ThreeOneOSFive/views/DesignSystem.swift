@@ -38,6 +38,34 @@ struct AppCardBorder: View {
     }
 }
 
+struct ReferenceEmptyCard<Actions: View>: View {
+    let systemName: String
+    let title: String
+    let message: String
+    @ViewBuilder let actions: () -> Actions
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Image(systemName: systemName)
+                .font(.system(size: 42, weight: .medium))
+                .foregroundStyle(AppTheme.accent)
+            Text(title)
+                .font(.title3.weight(.bold))
+                .multilineTextAlignment(.center)
+            Text(message)
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            actions()
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 24)
+        .padding(.vertical, 52)
+        .background(.background, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
+    }
+}
+
 struct AppRowIcon: View {
     let systemName: String
     var tint: Color = AppTheme.accent
