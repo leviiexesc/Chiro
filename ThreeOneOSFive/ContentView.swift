@@ -130,7 +130,6 @@ struct ContentView: View {
             case .cleaner: return "sparkles"
             case .wallpapers: return "photo.on.rectangle.angled"
             }
-            }
         }
     }
 
