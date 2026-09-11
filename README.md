@@ -23,16 +23,16 @@
 </p>
 
 > [!WARNING]
-> 3105 is research software for personal device management. Keep a backup and use it only on devices and data you own. Simulator screenshots demonstrate UI only; they do not verify device-level access.
+> Chiro is research software for personal device management. Keep a backup and use it only on devices and data you own. Simulator screenshots demonstrate UI only; they do not verify device-level access.
 
 ## Preview
 
 <p align="center">
-  <img src="docs/images/home.png" width="245" alt="3105 Home">
+  <img src="docs/images/home.png" width="245" alt="Chiro Home">
   &nbsp;
-  <img src="docs/images/patches.png" width="245" alt="3105 Patches">
+  <img src="docs/images/patches.png" width="245" alt="Chiro Patches">
   &nbsp;
-  <img src="docs/images/cleaner.png" width="245" alt="3105 Cleaner">
+  <img src="docs/images/cleaner.png" width="245" alt="Chiro Cleaner">
 </p>
 
 ## What's new in 1.1.0
@@ -101,7 +101,7 @@ Do not publish logs, app containers, cookies, account databases, or patch payloa
 
 ## Credits
 
-3105 is developed and designed by [YangJiii](https://x.com/duongduong0908).
+Chiro is developed and maintained by [leviiexesc](https://github.com/leviiexesc).
 
 Special thanks to [0xjohnny](https://x.com/0xjohnny) for [FilzaSlop](https://github.com/0xjohnnydev/FilzaSlop) and related research:
 
