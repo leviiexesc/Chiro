@@ -83,8 +83,8 @@ struct ContentView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             CompactFloatingTabBar(selection: $compactTab)
-                .padding(.horizontal, 40)
-                .padding(.bottom, 10)
+                .padding(.horizontal, 28)
+                .padding(.bottom, 8)
         }
         .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
         .padding(.bottom, 72)
@@ -261,28 +261,38 @@ private struct CompactFloatingTabBar: View {
                 } label: {
                     VStack(spacing: 4) {
                         Image(systemName: tab.systemImage)
-                            .font(.system(size: 24, weight: .semibold))
-                            .frame(height: 28)
+                            .font(.system(size: 22, weight: .semibold))
+                            .frame(height: 27)
                         Text(language.text(tab.titleKey))
-                            .font(.caption.weight(.medium))
+                            .font(.caption2.weight(.medium))
                             .lineLimit(1)
+                            .minimumScaleFactor(0.68)
+                            .allowsTightening(true)
+                            .frame(maxWidth: .infinity)
                     }
                     .foregroundStyle(selection == tab ? AppTheme.accent : .primary)
-                    .frame(maxWidth: .infinity, minHeight: 64)
+                    .frame(maxWidth: .infinity, minHeight: 66)
                     .background(
                         selection == tab
-                            ? AppTheme.accent.opacity(0.10)
+                            ? Color.black.opacity(0.56)
                             : Color.clear,
                         in: Capsule()
                     )
+                    .overlay {
+                        if selection == tab {
+                            Capsule()
+                                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                        }
+                    }
                 }
                 .buttonStyle(.plain)
             }
         }
-        .padding(5)
-        .background(.ultraThinMaterial, in: Capsule())
-        .overlay(Capsule().stroke(Color.white.opacity(0.7), lineWidth: 1))
-        .shadow(color: .black.opacity(0.10), radius: 18, y: 8)
+        .padding(4)
+        .frame(height: 76)
+        .background(Color(uiColor: .secondarySystemBackground), in: Capsule())
+        .overlay(Capsule().stroke(Color.white.opacity(0.18), lineWidth: 1))
+        .shadow(color: .black.opacity(0.28), radius: 18, y: 8)
     }
 }
 
