@@ -603,7 +603,7 @@
 "wallpaper.install" = "Apply";
 "wallpaper.install_warning_title" = "Install this wallpaper package?";
 "wallpaper.install_warning_message" = "Apply “%@” with %lld wallpapers on iOS %@ (%@)? Existing wallpapers stay unchanged.";
-"wallpaper.installed_by_3105" = "Wallpapers added by 3105";
+"wallpaper.installed_by_3105" = "Wallpapers added by Chiro";
 "wallpaper.custom_count" = "Added wallpapers";
 "wallpaper.reset" = "Reset Collections";
 "wallpaper.reset_footer" = "Removes custom collections, including ones added by other tools. Apple default collections are kept.";
@@ -636,7 +636,7 @@
 "wallpaper.error.package" = "This is not a supported .tendies package.";
 "wallpaper.error.archive" = "The archive is malformed or contains an unsafe path.";
 "wallpaper.error.symlink" = "Wallpaper packages and target folders cannot contain symbolic links.";
-"wallpaper.error.size" = "The wallpaper package exceeds 3105's safe size or item limits.";
+"wallpaper.error.size" = "The wallpaper package exceeds Chiro's safe size or item limits.";
 "wallpaper.error.no_descriptors" = "No supported wallpaper descriptors were found in this package.";
 "wallpaper.error.access" = "Chiro could not obtain verified read/write access to com.apple.PosterBoard.";
 "wallpaper.error.backup" = "The recovery journal could not be written, so installation was stopped.";

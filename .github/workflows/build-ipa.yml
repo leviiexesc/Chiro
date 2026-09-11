@@ -18,7 +18,7 @@ jobs:
         run: |
           xcodebuild \
             -project ThreeOneOSFive.xcodeproj \
-            -scheme 3105 \
+            -scheme Chiro \
             -sdk iphoneos \
             -configuration Release \
             -derivedDataPath build \
@@ -30,7 +30,7 @@ jobs:
       - name: Package IPA
         run: |
           mkdir -p Payload
-          cp -R build/Build/Products/Release-iphoneos/3105.app Payload/
+          cp -R build/Build/Products/Release-iphoneos/Chiro.app Payload/
           zip -qry Chiro-unsigned.ipa Payload
 
       - name: Upload IPA artifact

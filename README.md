@@ -45,7 +45,7 @@ See the complete [Patch workspace guide](docs/PATCH_GUIDE.md).
 
 ## What's new in 1.0.1
 
-- **Patch workspace v2** — build patches as a normal bundle-based directory tree under `On My iPhone/3105/Patches`; Apply and Export synchronize the workspace automatically.
+- **Patch workspace v2** — build patches as a normal bundle-based directory tree under `On My iPhone/Chiro/Patches`; Apply and Export synchronize the workspace automatically.
 - **Safer recovery** — original files are journaled before writes; Restore puts existing files back, removes files introduced by the patch, and removes patch-created directories once empty.
 - **More capable Files tab** — independent tabs, preserved folder position, multi-selection, ZIP creation and extraction, plus a denser and more consistent grouped layout.
 - **Responsive navigation** — iPad split-view and landscape support, optional Cleaner/Wallpaper tabs, stable search fields, and refined icon/row sizing.
@@ -59,13 +59,13 @@ See the complete [Patch workspace guide](docs/PATCH_GUIDE.md).
 - **File operations** — search, preview, share, import multiple files, copy, move, paste, rename, delete, create files and folders, make ZIP archives, and safely handle name conflicts.
 - **Portable `.3105` patches** — bundle-based rules survive container-ID changes between devices; projects may include files or folders, support optional password protection, and can be imported from Files or a secure website link.
 - **Limited Cleaner** — scans only each app's `Library/Caches` and `tmp`, sorts recoverable size in either direction, supports bulk selection, and requires confirmation before deletion.
-- **Wallpaper Lab** — imports `.tendies` packages, validates payloads, journals installed items, and resets only content installed by 3105.
-- **No jailbreak installation** — 3105 does not install a persistent jailbreak, bootstrap, or daemon and does not inject code into third-party apps. Because it still uses device exploits and can modify app data, no universal guarantee can be made against every app's integrity or jailbreak-detection policy.
+- **Wallpaper Lab** — imports `.tendies` packages, validates payloads, journals installed items, and resets only content installed by Chiro.
+- **No jailbreak installation** — Chiro does not install a persistent jailbreak, bootstrap, or daemon and does not inject code into third-party apps. Because it still uses device exploits and can modify app data, no universal guarantee can be made against every app's integrity or jailbreak-detection policy.
 - **Localized interface** — English and Khmer.
 
 ## Compatibility
 
-3105 enables device-level features only for builds explicitly verified by the project:
+Chiro enables device-level features only for builds explicitly verified by the project:
 
 | System | Verified range/builds |
 | --- | --- |
@@ -91,7 +91,7 @@ Unlisted iOS 27 builds are marked unsupported rather than assumed compatible. Th
 ```text
 Chiro/
 ├── ThreeOneOSFive/          # SwiftUI app, helpers, native bridges, localizations
-├── ThreeOneOSFive.xcodeproj # Xcode project and 3105 scheme
+├── ThreeOneOSFive.xcodeproj # Xcode project and Chiro scheme
 └── docs/images/             # Repository artwork and current UI previews
 ```
 
@@ -114,4 +114,4 @@ The project also builds on work from Pocket Poster/Nugget, CrazyMind90, forcequi
 
 ## License
 
-Original portions of 3105 are distributed under the [GNU General Public License v3.0](LICENSE). Third-party components remain subject to their respective upstream copyright and license terms; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Original portions of Chiro are distributed under the [GNU General Public License v3.0](LICENSE). Third-party components remain subject to their respective upstream copyright and license terms; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
