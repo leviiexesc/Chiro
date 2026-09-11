@@ -162,8 +162,7 @@
 		3105L104 /* RepositorySourcesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositorySourcesView.swift; sourceTree = "<group>"; };
 		3105L105 /* RepositoryPresentationSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryPresentationSupport.swift; sourceTree = "<group>"; };
 		3105A121 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		3105A122 /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
-		3105B123 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		3105A122 /* km */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = km; path = km.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -351,8 +350,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				vi,
-				"zh-Hans",
+				km,
 				Base,
 			);
 			mainGroup = 3105A400;
@@ -447,8 +445,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				3105A121 /* en */,
-				3105A122 /* vi */,
-				3105B123 /* zh-Hans */,
+				3105A122 /* km */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

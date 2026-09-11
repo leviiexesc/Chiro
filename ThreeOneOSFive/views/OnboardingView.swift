@@ -1,7 +1,12 @@
 import SwiftUI
 
+enum CommunityLinks {
+    static let telegram = URL(string: "https://t.me/your_telegram_invite")!
+    static let discord = URL(string: "https://discord.gg/your_discord_invite")!
+}
+
 private enum OnboardingStep: Int, CaseIterable {
-    case language = 0, welcome, versions, install
+    case language = 0, welcome, versions, install, community
 
     var next: OnboardingStep? { Self(rawValue: rawValue + 1) }
     var prev: OnboardingStep? { Self(rawValue: rawValue - 1) }
@@ -105,6 +110,7 @@ struct OnboardingView: View {
         case .welcome: welcomePage
         case .versions: versionsPage
         case .install: installPage
+        case .community: communityPage
         }
     }
 
@@ -272,7 +278,7 @@ struct OnboardingView: View {
 
     private var installPage: some View {
         VStack(spacing: 20) {
-            featureIcon(systemName: "exclamationmark.shield.fill", color: .orange)
+            featureIcon(systemName: "exclamationmark.shield.fill", color: .red)
 
             VStack(spacing: 8) {
                 Text(language.text("onboarding.install_title"))
@@ -289,7 +295,7 @@ struct OnboardingView: View {
             VStack(alignment: .leading, spacing: 10) {
                 installBullet(icon: "checkmark.seal.fill", text: language.text("onboarding.install_ok"), color: .green)
                 installBullet(icon: "xmark.octagon.fill", text: language.text("onboarding.install_bad"), color: .red)
-                installBullet(icon: "exclamationmark.triangle.fill", text: language.text("onboarding.install_jailbreak"), color: .orange)
+                installBullet(icon: "exclamationmark.triangle.fill", text: language.text("onboarding.install_jailbreak"), color: .red)
             }
             .padding(14)
             .background(
@@ -304,6 +310,47 @@ struct OnboardingView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .top)
+    }
+
+    private var communityPage: some View {
+        VStack(spacing: 20) {
+            featureIcon(systemName: "bubble.left.and.bubble.right.fill", color: AppTheme.accent)
+
+            VStack(spacing: 8) {
+                Text(language.text("onboarding.community_title"))
+                    .font(.title3.weight(.bold))
+                    .multilineTextAlignment(.center)
+                Text(language.text("onboarding.community_message"))
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            VStack(spacing: 10) {
+                communityLink(title: "Telegram", icon: "paperplane.fill", url: CommunityLinks.telegram)
+                communityLink(title: "Discord", icon: "bubble.left.and.bubble.right.fill", url: CommunityLinks.discord)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .top)
+    }
+
+    private func communityLink(title: String, icon: String, url: URL?) -> some View {
+        Group {
+            if let url {
+                Link(destination: url) {
+                    Label(title, systemImage: icon)
+                        .frame(maxWidth: .infinity)
+                }
+            } else {
+                Label(title, systemImage: icon)
+                    .frame(maxWidth: .infinity)
+            }
+        }
+        .font(.body.weight(.semibold))
+        .foregroundStyle(.primary)
+        .padding(.vertical, 14)
+        .background(Color(uiColor: .secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
     private func featureIcon(systemName: String, color: Color) -> some View {
@@ -409,8 +456,8 @@ struct OnboardingView: View {
             }
         } label: {
             HStack(spacing: 6) {
-                Text(language.text(step == .install ? "common.finish" : "common.next"))
-                if step != .install {
+                Text(language.text(step == .community ? "common.finish" : "common.next"))
+                if step != .community {
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.semibold))
                         .accessibilityHidden(true)

@@ -97,7 +97,7 @@ struct WallpaperLabView: View {
                             ? "checkmark.shield.fill"
                             : "exclamationmark.triangle.fill"
                     )
-                    .foregroundStyle(report.canInstall ? Color.green : Color.orange)
+                    .foregroundStyle(report.canInstall ? Color.green : Color.red)
                     Spacer()
                     Text("MHA-C2")
                         .font(.caption.monospaced())
@@ -386,7 +386,7 @@ struct WallpaperLabView: View {
 #if targetEnvironment(simulator)
         if ProcessInfo.processInfo.arguments.contains("--simulate-wallpaper-data") {
             let root = FileManager.default.temporaryDirectory.appendingPathComponent(
-                "3105-Simulated-PosterBoard",
+                "Chiro-Simulated-PosterBoard",
                 isDirectory: true
             )
             let descriptors = root.appendingPathComponent(
@@ -681,7 +681,7 @@ struct WallpaperResetSettingsView: View {
                             ? "checkmark.shield.fill"
                             : "exclamationmark.triangle.fill"
                     )
-                    .foregroundStyle(report.canInstall ? Color.green : Color.orange)
+                    .foregroundStyle(report.canInstall ? Color.green : Color.red)
                     LabeledContent(language.text("wallpaper.custom_count")) {
                         Text("\(report.customDescriptorCount)")
                             .monospacedDigit()

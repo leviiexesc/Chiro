@@ -369,7 +369,7 @@ final class PackageRepositoryStore: ObservableObject {
                 identifier: "clean-layout",
                 kind: .patch,
                 name: "Clean Layout",
-                author: "YangJiii",
+                author: "Chiro",
                 version: "1.2.0",
                 summary: "A compact layout patch for a cleaner app interface.",
                 details: "Simulator preview package used to verify marketplace layout.",
@@ -398,7 +398,7 @@ final class PackageRepositoryStore: ObservableObject {
                 identifier: "profile-switcher",
                 kind: .patch,
                 name: "Profile Switcher",
-                author: "3105 Community",
+                author: "Chiro Community",
                 version: "1.0.0",
                 summary: "A portable workspace example with multiple bundle targets.",
                 details: nil,
@@ -423,7 +423,7 @@ final class PackageRepositoryStore: ObservableObject {
         sources = [source]
         repositories[source.id] = PackageRepository(
             identifier: "com.yangjiii.preview",
-            name: "3105 Preview",
+            name: "Chiro Preview",
             summary: "Simulator-only marketplace preview",
             iconURL: nil,
             sourceURL: sourceURL,
@@ -483,8 +483,8 @@ final class PackageRepositoryStore: ObservableObject {
         sources = [source]
         repositories[source.id] = PackageRepository(
             identifier: "com.yangjiii.3105",
-            name: "3105 Repository",
-            summary: "Nguồn chính thức cho tweak và wallpaper của 3105.",
+            name: "Chiro Repository",
+            summary: "Official source for Chiro tweaks and wallpapers.",
             iconURL: nil,
             sourceURL: sourceURL,
             packages: [package]
@@ -613,7 +613,7 @@ enum PackageRepositoryNetworkClient {
         defer { session.invalidateAndCancel() }
 
         var request = URLRequest(url: url)
-        request.setValue("3105", forHTTPHeaderField: "User-Agent")
+        request.setValue("Chiro", forHTTPHeaderField: "User-Agent")
         let (temporaryURL, response) = try await session.download(for: request)
         guard let response = response as? HTTPURLResponse,
               (200..<300).contains(response.statusCode),

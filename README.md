@@ -1,18 +1,18 @@
 <p align="center">
-  <img src="docs/images/app-icon.png" width="132" alt="3105 app icon">
+  <img src="docs/images/app-icon.png" width="132" alt="Chiro app icon">
 </p>
 
-<h1 align="center">3105</h1>
+<h1 align="center">Chiro</h1>
 
 <p align="center">
   A native iOS workspace for app-container files, portable patches, limited cleanup, and PosterBoard wallpaper packages.
 </p>
 
 <p align="center">
-  <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-E6753A?style=flat-square">
+  <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-D11920?style=flat-square">
   <img alt="iOS" src="https://img.shields.io/badge/iOS-17.0–18.7.1%20%7C%2026.0–26.6.1%20%7C%2027%20beta%201–4-222222?style=flat-square">
   <img alt="Swift" src="https://img.shields.io/badge/Swift-5-F05138?style=flat-square&logo=swift&logoColor=white">
-  <img alt="Languages" src="https://img.shields.io/badge/languages-English%20%7C%20Tiếng%20Việt%20%7C%20简体中文-E6753A?style=flat-square">
+  <img alt="Languages" src="https://img.shields.io/badge/languages-English%20%7C%20Khmer-D11920?style=flat-square">
 </p>
 
 <p align="center">
@@ -61,7 +61,7 @@ See the complete [Patch workspace guide](docs/PATCH_GUIDE.md).
 - **Limited Cleaner** — scans only each app's `Library/Caches` and `tmp`, sorts recoverable size in either direction, supports bulk selection, and requires confirmation before deletion.
 - **Wallpaper Lab** — imports `.tendies` packages, validates payloads, journals installed items, and resets only content installed by 3105.
 - **No jailbreak installation** — 3105 does not install a persistent jailbreak, bootstrap, or daemon and does not inject code into third-party apps. Because it still uses device exploits and can modify app data, no universal guarantee can be made against every app's integrity or jailbreak-detection policy.
-- **Localized interface** — English, Vietnamese, and Simplified Chinese.
+- **Localized interface** — English and Khmer.
 
 ## Compatibility
 

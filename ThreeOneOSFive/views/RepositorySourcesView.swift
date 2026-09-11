@@ -147,7 +147,7 @@ private struct RepositorySourceRow: View {
                 repository: store.repository(for: source.id),
                 fallbackText: store.repository(for: source.id)?.name
                     ?? source.manifestURL.host
-                    ?? "3105"
+                    ?? "Chiro"
             )
             Text(
                 store.repository(for: source.id)?.name
@@ -293,7 +293,7 @@ private struct RepositorySourceDetailView: View {
                     repository: repository,
                     fallbackText: repository?.name
                         ?? source?.manifestURL.host
-                        ?? "3105"
+                        ?? "Chiro"
                 )
                 VStack(alignment: .leading, spacing: 5) {
                     Text(repository?.name
