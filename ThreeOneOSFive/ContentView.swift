@@ -109,7 +109,7 @@ struct ContentView: View {
         }
     }
 
-    private enum CompactTab: CaseIterable, Hashable {
+    enum CompactTab: CaseIterable, Hashable {
         case home, files, patches, cleaner, wallpapers
 
         var titleKey: String {
