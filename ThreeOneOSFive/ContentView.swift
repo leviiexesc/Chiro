@@ -74,6 +74,7 @@ struct ContentView: View {
         .sheet(isPresented: $showLogs) { LogView() }
         .patchStorePresentation(patchStore)
         .repositoryStorePresentation(repositoryStore, patchStore: patchStore)
+        .preferredColorScheme(.dark)
     }
 
     private var compactLayout: some View {
