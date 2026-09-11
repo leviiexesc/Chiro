@@ -86,7 +86,7 @@ struct ContentView: View {
                 .padding(.bottom, 10)
         }
         .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
-        .safeAreaPadding(.bottom, 72)
+        .padding(.bottom, 72)
     }
 
     @ViewBuilder
