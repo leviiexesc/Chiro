@@ -89,7 +89,7 @@ Unlisted iOS 27 builds are marked unsupported rather than assumed compatible. Th
 ## Project layout
 
 ```text
-3105/
+Chiro/
 ├── ThreeOneOSFive/          # SwiftUI app, helpers, native bridges, localizations
 ├── ThreeOneOSFive.xcodeproj # Xcode project and 3105 scheme
 └── docs/images/             # Repository artwork and current UI previews
