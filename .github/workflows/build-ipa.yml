@@ -18,7 +18,7 @@ jobs:
         run: |
           xcodebuild \
             -project ThreeOneOSFive.xcodeproj \
-            -scheme ThreeOneOSFive \
+            -scheme 3105 \
             -sdk iphoneos \
             -configuration Release \
             -derivedDataPath build \
