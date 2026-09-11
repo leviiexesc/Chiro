@@ -1,13 +1,7 @@
 import SwiftUI
 
 enum AppTheme {
-    static let accent = Color(
-        uiColor: UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(red: 0.04, green: 0.52, blue: 1.00, alpha: 1.00)
-                : UIColor(red: 0.00, green: 0.48, blue: 1.00, alpha: 1.00)
-        }
-    )
+    static let accent = Color(red: 0.00, green: 0.48, blue: 1.00)
     static let pageBackground = Color(uiColor: .systemBackground)
     static let consoleBackground = Color(uiColor: .secondarySystemBackground)
     static let pageInset: CGFloat = 16
