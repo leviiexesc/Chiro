@@ -1020,22 +1020,18 @@ struct AppUtilityToolbar: ToolbarContent {
     let onOpenLogs: () -> Void
 
     var body: some ToolbarContent {
-        ToolbarItem(placement: .navigationBarTrailing) {
-            Menu {
-                Button(action: onOpenSettings) {
-                    Label(
-                        language.text("settings.title"),
-                        systemImage: "gearshape"
-                    )
-                }
-                Button(action: onOpenLogs) {
-                    Label(
-                        language.text("accessibility.open_logs"),
-                        systemImage: "apple.terminal"
-                    )
-                }
-            } label: {
-                Image(systemName: "gearshape")
+        ToolbarItemGroup(placement: .navigationBarTrailing) {
+            Button(action: onOpenLogs) {
+                Image(systemName: "apple.terminal")
+                    .frame(width: 42, height: 42)
+                    .background(Color(uiColor: .secondarySystemBackground), in: Circle())
+            }
+            .accessibilityLabel(language.text("accessibility.open_logs"))
+
+            Button(action: onOpenSettings) {
+                Image(systemName: "gearshape.fill")
+                    .frame(width: 42, height: 42)
+                    .background(Color(uiColor: .secondarySystemBackground), in: Circle())
             }
             .accessibilityLabel(language.text("accessibility.open_settings"))
         }
